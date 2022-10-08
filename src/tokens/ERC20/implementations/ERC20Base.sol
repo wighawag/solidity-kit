@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../interfaces/IERC20.sol";
 import "./ImplementingERC20Internal.sol";
-import "../../Libraries/Constants.sol";
+import "../../../utils/Constants.sol";
 
 interface ITransferReceiver {
 	function onTokenTransfer(
@@ -31,7 +31,6 @@ interface IApprovalReceiver {
 }
 
 abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
-
 	uint256 internal _totalSupply;
 	mapping(address => uint256) internal _balances;
 	mapping(address => mapping(address => uint256)) internal _allowances;
