@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../interfaces/IERC20.sol";
 import "./ImplementingERC20Internal.sol";
-import "../../../utils/Constants.sol";
+import "../../utils/Constants.sol";
 
 interface ITransferReceiver {
 	function onTokenTransfer(

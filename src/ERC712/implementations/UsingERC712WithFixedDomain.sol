@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./UsingERC712.sol";
 import "./Named.sol";
-import "../../../utils/ShortString.sol";
+import "../../utils/ShortString.sol";
 
 abstract contract UsingERC712WithFixedDomain is UsingERC712, Named {
 	bytes32 internal immutable _DOMAIN_SEPARATOR;
