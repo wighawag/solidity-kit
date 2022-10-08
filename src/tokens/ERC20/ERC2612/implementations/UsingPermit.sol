@@ -1,35 +1,32 @@
-// SPDX-License-Identifier: AGPL-1.0
-pragma solidity 0.8.9;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-import "./ERC20Internal.sol";
-import "../Interfaces/IERC2612Standalone.sol";
+import "../../implementations/ImplementingERC20Internal.sol";
+import "../interfaces/IERC2612Standalone.sol";
+import "../../../ERC712/implementations/UsingERC712WithDynamicChainId.sol";
+import "./ImplementingExternalDomainSeparator.sol";
 
-abstract contract WithPermitAndFixedDomain is ERC20Internal, IERC2612Standalone {
+abstract contract UsingPermit is
+	ImplementingERC20Internal,
+	ImplementingExternalDomainSeparator,
+	IERC2612Standalone,
+	UsingERC712
+{
 	bytes32 internal constant PERMIT_TYPEHASH =
 		keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
-	// solhint-disable-next-line var-name-mixedcase
-	bytes32 public immutable override DOMAIN_SEPARATOR;
-
 	mapping(address => uint256) internal _nonces;
 
-	constructor(string memory version) {
-		if (bytes(version).length == 0) {
-			version = "1";
-		}
-		DOMAIN_SEPARATOR = keccak256(
-			abi.encode(
-				keccak256("EIP712Domain(string name,string version,address verifyingContract)"),
-				keccak256(bytes(name())),
-				keccak256(bytes(version)),
-				address(this)
-			)
-		);
-	}
-
-	function nonces(address owner) external view override returns (uint256) {
+	function nonces(address owner) external view returns (uint256) {
 		return _nonces[owner];
 	}
+
+	function DOMAIN_SEPARATOR()
+		public
+		view
+		virtual
+		override(IERC2612Standalone, ImplementingExternalDomainSeparator)
+		returns (bytes32);
 
 	function permit(
 		address owner,
@@ -46,7 +43,7 @@ abstract contract WithPermitAndFixedDomain is ERC20Internal, IERC2612Standalone 
 		bytes32 digest = keccak256(
 			abi.encodePacked(
 				"\x19\x01",
-				DOMAIN_SEPARATOR,
+				DOMAIN_SEPARATOR(),
 				keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, currentNonce, deadline))
 			)
 		);

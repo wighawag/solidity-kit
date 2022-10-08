@@ -1,14 +1,12 @@
-// SPDX-License-Identifier: AGPL-1.0
-pragma solidity 0.8.9;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-abstract contract ERC20Internal {
+abstract contract ImplementingERC20Internal {
 	function _approveFor(
 		address owner,
 		address target,
 		uint256 amount
 	) internal virtual;
-
-	function name() public virtual returns (string memory);
 
 	function _mint(address to, uint256 amount) internal virtual;
 

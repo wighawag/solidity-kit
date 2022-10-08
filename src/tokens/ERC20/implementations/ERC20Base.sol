@@ -1,10 +1,9 @@
-// SPDX-License-Identifier: AGPL-1.0
-pragma solidity 0.8.9;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "./ERC20Internal.sol";
-import "../Libraries/Constants.sol";
+import "../interfaces/IERC20.sol";
+import "./ImplementingERC20Internal.sol";
+import "../../Libraries/Constants.sol";
 
 interface ITransferReceiver {
 	function onTokenTransfer(
@@ -14,8 +13,8 @@ interface ITransferReceiver {
 	) external returns (bool);
 }
 
-interface IPaidForReceiver {
-	function onTokenPaidFor(
+interface ITransferOnBehalfReceiver {
+	function onTokenTransferedOnBehalf(
 		address payer,
 		address forAddress,
 		uint256 amount,
@@ -31,8 +30,7 @@ interface IApprovalReceiver {
 	) external returns (bool);
 }
 
-abstract contract ERC20Base is IERC20, ERC20Internal {
-	using Address for address;
+abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 
 	uint256 internal _totalSupply;
 	mapping(address => uint256) internal _balances;
@@ -58,7 +56,7 @@ abstract contract ERC20Base is IERC20, ERC20Internal {
 	function allowance(address owner, address spender) external view override returns (uint256) {
 		if (owner == address(this)) {
 			// see transferFrom: address(this) allows anyone
-			return Constants.UINT256_MAX;
+			return type(uint256).max;
 		}
 		return _allowances[owner][spender];
 	}
@@ -109,14 +107,14 @@ abstract contract ERC20Base is IERC20, ERC20Internal {
 		return ITransferReceiver(to).onTokenTransfer(from, amount, data);
 	}
 
-	function payForAndCall(
+	function transferOnBehalfAndCall(
 		address forAddress,
 		address to,
 		uint256 amount,
 		bytes calldata data
 	) external returns (bool) {
 		_transfer(msg.sender, to, amount);
-		return IPaidForReceiver(to).onTokenPaidFor(msg.sender, forAddress, amount, data);
+		return ITransferOnBehalfReceiver(to).onTokenTransferedOnBehalf(msg.sender, forAddress, amount, data);
 	}
 
 	function transferFrom(
@@ -161,7 +159,7 @@ abstract contract ERC20Base is IERC20, ERC20Internal {
 		// this allow mintAndApprovedCall without gas overhead
 		if (msg.sender != from && from != address(this)) {
 			uint256 currentAllowance = _allowances[from][msg.sender];
-			if (currentAllowance != Constants.UINT256_MAX) {
+			if (currentAllowance != type(uint256).max) {
 				// save gas when allowance is maximal by not reducing it (see https://github.com/ethereum/EIPs/issues/717)
 				require(currentAllowance >= amount, "NOT_AUTHOIZED_ALLOWANCE");
 				_allowances[from][msg.sender] = currentAllowance - amount;

@@ -1,8 +1,10 @@
-// SPDX-License-Identifier: AGPL-1.0
+// SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.9;
+pragma solidity ^0.8.0;
 
-interface IERC2612Standalone {
+import "../../../ERC712/interfaces/IERC5267.sol";
+
+interface IERC2612Standalone is IERC5267 {
 	function permit(
 		address owner,
 		address spender,
