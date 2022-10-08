@@ -1,7 +1,9 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@openzeppelin/contracts': ^4.7.3
   '@types/node': ^18.8.3
+  fs-extra: ^10.1.0
   hardhat: ^2.11.1
   prettier: ^2.7.1
   prettier-plugin-solidity: ^1.0.0-beta.24
@@ -9,7 +11,9 @@ specifiers:
   typescript: ^4.8.4
 
 devDependencies:
+  '@openzeppelin/contracts': 4.7.3
   '@types/node': 18.8.3
+  fs-extra: 10.1.0
   hardhat: 2.11.2_mwhvu7sfp6vq5ryuwb6hlbjfka
   prettier: 2.7.1
   prettier-plugin-solidity: 1.0.0-beta.24_prettier@2.7.1
@@ -462,6 +466,10 @@ packages:
       '@nomicfoundation/solidity-analyzer-win32-arm64-msvc': 0.0.3
       '@nomicfoundation/solidity-analyzer-win32-ia32-msvc': 0.0.3
       '@nomicfoundation/solidity-analyzer-win32-x64-msvc': 0.0.3
+    dev: true
+
+  /@openzeppelin/contracts/4.7.3:
+    resolution: {integrity: sha512-dGRS0agJzu8ybo44pCIf3xBaPQN/65AIXNgK8+4gzKd5kbvlqyxryUYVLJv7fK98Seyd2hDZzVEHSWAh0Bt1Yw==}
     dev: true
 
   /@scure/base/1.1.1:
@@ -1228,6 +1236,15 @@ packages:
       rimraf: 2.7.1
     dev: true
 
+  /fs-extra/10.1.0:
+    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs-extra/7.0.1:
     resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
     engines: {node: '>=6 <7 || >=8'}
@@ -1540,6 +1557,14 @@ packages:
 
   /jsonfile/4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
+    optionalDependencies:
+      graceful-fs: 4.2.10
+    dev: true
+
+  /jsonfile/6.1.0:
+    resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
+    dependencies:
+      universalify: 2.0.0
     optionalDependencies:
       graceful-fs: 4.2.10
     dev: true
@@ -2215,6 +2240,11 @@ packages:
   /universalify/0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
+    dev: true
+
+  /universalify/2.0.0:
+    resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
+    engines: {node: '>= 10.0.0'}
     dev: true
 
   /unpipe/1.0.0:

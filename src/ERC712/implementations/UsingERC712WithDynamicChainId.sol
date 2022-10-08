@@ -24,7 +24,7 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 			chainId := chainid()
 		}
 
-		// in case a fork happen, to support the chain that had to change its chainId, we compue the domain operator
+		// in case a fork happen, to support the chain that had to change its chainId, we compute the domain operator
 		return chainId == _deploymentChainId ? _deploymentDomainSeparator : _calculateDomainSeparator(chainId);
 	}
 

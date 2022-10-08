@@ -7,12 +7,15 @@
     "library"
   ],
   "files": [
+    "_lib",
     "src"
   ],
   "license": "MIT",
   "description": "A set of base solidity contracts and utilities.",
   "devDependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
     "@types/node": "^18.8.3",
+    "fs-extra": "^10.1.0",
     "hardhat": "^2.11.1",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.24",
