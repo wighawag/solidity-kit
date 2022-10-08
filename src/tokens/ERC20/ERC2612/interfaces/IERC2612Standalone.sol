@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "../../../ERC712/interfaces/IERC5267.sol";
+import "../../../../users/ERC712/interfaces/IERC5267.sol";
 
 interface IERC2612Standalone is IERC5267 {
 	function permit(

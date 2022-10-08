@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import {HardhatUserConfig} from 'hardhat/types';
 
 const config: HardhatUserConfig = {

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./UsingPermit.sol";
-import "../../../ERC712/implementations/UsingERC712WithFixedDomain.sol";
+import "../../../../users/ERC712/implementations/UsingERC712WithFixedDomain.sol";
 
 abstract contract UsingPermitWithFixedDomain is UsingPermit, UsingERC712WithFixedDomain {
 	constructor(string memory version) UsingERC712WithFixedDomain(version) {}
