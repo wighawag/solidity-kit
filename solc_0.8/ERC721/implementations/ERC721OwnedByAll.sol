@@ -7,7 +7,7 @@ import "./ImplementingERC721Internal.sol";
 
 import "../..//openzeppelin/contracts/utils/Address.sol";
 
-abstract contract ERC721 is IERC721, ImplementingERC721Internal {
+abstract contract ERC721OwnedByAll is IERC721, ImplementingERC721Internal {
 	using Openzeppelin_Address for address;
 
 	bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
@@ -25,10 +25,10 @@ abstract contract ERC721 is IERC721, ImplementingERC721Internal {
 	/// @param operator The address receiving the approval.
 	/// @param id The id of the token.
 	function approve(address operator, uint256 id) external override {
-		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(id);
+		(address owner, uint256 blockNumber, bool registered) = _ownerBlockNumberAndRegistered(id);
 		require(owner != address(0), "NONEXISTENT_TOKEN");
 		require(msg.sender == owner || isApprovedForAll(owner, msg.sender), "UNAUTHORIZED_APPROVAL");
-		_approveFor(owner, blockNumber, operator, id);
+		_approveFor(owner, blockNumber, operator, id, registered);
 	}
 
 	/// @notice Transfer a token between 2 addresses.
@@ -79,6 +79,11 @@ abstract contract ERC721 is IERC721, ImplementingERC721Internal {
 	function balanceOf(address owner) public view override returns (uint256 balance) {
 		require(owner != address(0), "ZERO_ADDRESS_OWNER");
 		balance = _balances[owner];
+		(, bool registered) = _ownerOfAndRegistered(uint256(uint160(owner)));
+		if (!registered) {
+			// owned token was never registered
+			balance++;
+		}
 	}
 
 	/// @notice Get the owner of a token.
@@ -113,7 +118,11 @@ abstract contract ERC721 is IERC721, ImplementingERC721Internal {
 		ownersData = new OwnerData[](ids.length);
 		for (uint256 i = 0; i < ids.length; i++) {
 			uint256 data = _owners[ids[i]];
-			ownersData[i].owner = address(uint160(data));
+			address owner = address(uint160(data));
+			if (owner == address(0) && ids[i] < 2**160) {
+				owner = address(uint160(ids[i]));
+			}
+			ownersData[i].owner = owner;
 			ownersData[i].lastTransferBlockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 		}
 	}
@@ -208,12 +217,15 @@ abstract contract ERC721 is IERC721, ImplementingERC721Internal {
 		address owner,
 		uint256 blockNumber,
 		address operator,
-		uint256 id
-	) internal override {
+		uint256 id,
+		bool alreadyRegistered
+	) internal {
 		if (operator == address(0)) {
-			_owners[id] = (blockNumber << 160) | uint256(uint160(owner));
+			_owners[id] = alreadyRegistered ? (blockNumber << 160) | uint256(uint160(owner)) : (blockNumber << 160);
 		} else {
-			_owners[id] = OPERATOR_FLAG | (blockNumber << 160) | uint256(uint160(owner));
+			_owners[id] =
+				OPERATOR_FLAG |
+				(alreadyRegistered ? (blockNumber << 160) | uint256(uint160(owner)) : (blockNumber << 160));
 			_operators[id] = operator;
 		}
 		emit Approval(owner, operator, id);
@@ -250,7 +262,10 @@ abstract contract ERC721 is IERC721, ImplementingERC721Internal {
 
 	/// @dev See ownerOf
 	function _ownerOf(uint256 id) internal view returns (address owner) {
-		return address(uint160(_owners[id]));
+		owner = address(uint160(_owners[id]));
+		if (owner == address(0) && id < 2**160) {
+			owner = address(uint160(id));
+		}
 	}
 
 	/// @dev Get the owner and operatorEnabled status of a token.
@@ -271,5 +286,73 @@ abstract contract ERC721 is IERC721, ImplementingERC721Internal {
 		uint256 data = _owners[id];
 		owner = address(uint160(data));
 		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
+	}
+
+	/// @dev Get the owner, operatorEnabled and registered status of a token.
+	/// @param id The token to query.
+	/// @return owner The owner of the token.
+	/// @return operatorEnabled Whether or not operators are enabled for this token.
+	/// @return registered whethe the token has been registered with an owner
+	function _ownerRegisteredAndOperatorEnabledOf(uint256 id)
+		internal
+		view
+		returns (
+			address owner,
+			bool operatorEnabled,
+			bool registered
+		)
+	{
+		uint256 data = _owners[id];
+		owner = address(uint160(data));
+		if (owner == address(0) && id < 2**160) {
+			owner = address(uint160(id));
+		} else {
+			registered = true;
+		}
+		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
+	}
+
+	/// @dev Get the ownerand registered status of a token.
+	/// @param id The token to query.
+	/// @return owner The owner of the token.
+	/// @return registered whethe the token has been registered with an owner
+	function _ownerOfAndRegistered(uint256 id) internal view returns (address owner, bool registered) {
+		owner = address(uint160(_owners[id]));
+		if (owner == address(0) && id < 2**160) {
+			owner = address(uint160(id));
+		} else {
+			registered = true;
+		}
+	}
+
+	/// @dev Get the ownerand registered status of a token.
+	/// @param id The token to query.
+	/// @return owner The owner of the token.
+	/// @return blockNumber the blockNumber at which the owner became the owner (last transfer).
+	/// @return registered whethe the token has been registered with an owner
+	function _ownerBlockNumberAndRegistered(uint256 id)
+		internal
+		view
+		returns (
+			address owner,
+			uint256 blockNumber,
+			bool registered
+		)
+	{
+		uint256 data = _owners[id];
+		owner = address(uint160(data));
+		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
+		if (owner == address(0) && id < 2**160) {
+			owner = address(uint160(id));
+		} else {
+			registered = true;
+		}
+	}
+
+	/// @notice Count NFTs tracked by this contract
+	/// @return A count of valid NFTs tracked by this contract, where each one of
+	///  them has an assigned and queryable owner not equal to the zero address
+	function totalSupply() external pure returns (uint256) {
+		return 2**160 - 1; // do not count token with id zero whose owner would otherwise be the zero address
 	}
 }
