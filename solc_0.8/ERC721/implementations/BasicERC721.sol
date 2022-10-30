@@ -258,7 +258,12 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	/// @param id The token to query.
 	/// @return owner The owner of the token.
 	/// @return operatorEnabled Whether or not operators are enabled for this token.
-	function _ownerAndOperatorEnabledOf(uint256 id) internal view returns (address owner, bool operatorEnabled) {
+	function _ownerAndOperatorEnabledOf(uint256 id)
+		internal
+		view
+		virtual
+		returns (address owner, bool operatorEnabled)
+	{
 		uint256 data = _owners[id];
 		owner = address(uint160(data));
 		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
@@ -268,7 +273,13 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	/// @param id The token to query.
 	/// @return owner The owner of the token.
 	/// @return blockNumber the blockNumber at which the owner became the owner (last transfer).
-	function _ownerAndBlockNumberOf(uint256 id) internal view override returns (address owner, uint256 blockNumber) {
+	function _ownerAndBlockNumberOf(uint256 id)
+		internal
+		view
+		virtual
+		override
+		returns (address owner, uint256 blockNumber)
+	{
 		uint256 data = _owners[id];
 		owner = address(uint160(data));
 		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;

@@ -50,6 +50,31 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		}
 	}
 
+	/// @dev See _ownerAndOperatorEnabledOf
+	function _ownerAndOperatorEnabledOf(uint256 id)
+		internal
+		view
+		override
+		returns (address owner, bool operatorEnabled)
+	{
+		uint256 data = _owners[id];
+		owner = address(uint160(data));
+		if (owner == address(0) && id < 2**160) {
+			owner = address(uint160(id));
+		}
+		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
+	}
+
+	/// @dev See _ownerAndBlockNumberOf
+	function _ownerAndBlockNumberOf(uint256 id) internal view override returns (address owner, uint256 blockNumber) {
+		uint256 data = _owners[id];
+		owner = address(uint160(data));
+		if (owner == address(0) && id < 2**160) {
+			owner = address(uint160(id));
+		}
+		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
+	}
+
 	/// @notice Count NFTs tracked by this contract
 	/// @return A count of valid NFTs tracked by this contract, where each one of
 	///  them has an assigned and queryable owner not equal to the zero address
