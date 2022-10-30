@@ -5,7 +5,7 @@ import "../interfaces/IERC721Receiver.sol";
 import "../interfaces/IERC721.sol";
 import "./ImplementingERC721Internal.sol";
 
-import "../..//openzeppelin/contracts/utils/Address.sol";
+import "../../openzeppelin/contracts/utils/Address.sol";
 
 abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	using Openzeppelin_Address for address;
@@ -76,7 +76,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	/// @notice Get the number of tokens owned by an address.
 	/// @param owner The address to look for.
 	/// @return balance The number of tokens owned by the address.
-	function balanceOf(address owner) public view override returns (uint256 balance) {
+	function balanceOf(address owner) public view virtual override returns (uint256 balance) {
 		require(owner != address(0), "ZERO_ADDRESS_OWNER");
 		balance = _balances[owner];
 	}
@@ -108,6 +108,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	function ownerAndLastTransferBlockNumberList(uint256[] calldata ids)
 		external
 		view
+		virtual
 		returns (OwnerData[] memory ownersData)
 	{
 		ownersData = new OwnerData[](ids.length);
@@ -211,9 +212,9 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		uint256 id
 	) internal override {
 		if (operator == address(0)) {
-			_owners[id] = (blockNumber << 160) | uint256(uint160(owner));
+			_owners[id] = blockNumber != 0 ? (blockNumber << 160) | uint256(uint160(owner)) : 0;
 		} else {
-			_owners[id] = OPERATOR_FLAG | (blockNumber << 160) | uint256(uint160(owner));
+			_owners[id] = OPERATOR_FLAG | (blockNumber != 0 ? (blockNumber << 160) | uint256(uint160(owner)) : 0);
 			_operators[id] = operator;
 		}
 		emit Approval(owner, operator, id);
@@ -249,7 +250,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	}
 
 	/// @dev See ownerOf
-	function _ownerOf(uint256 id) internal view returns (address owner) {
+	function _ownerOf(uint256 id) internal view virtual returns (address owner) {
 		return address(uint160(_owners[id]));
 	}
 
