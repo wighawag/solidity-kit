@@ -10,9 +10,3 @@ function copyFromDefault(p) {
 }
 
 ['.vscode/settings.json'].map(copyFromDefault);
-
-fs.emptyDirSync('_lib/openzeppelin');
-fs.copySync('node_modules/@openzeppelin', '_lib/openzeppelin', {
-	recursive: true,
-	dereference: true,
-});

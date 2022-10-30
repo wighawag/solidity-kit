@@ -7,8 +7,8 @@ import "../interfaces/IERC4494.sol";
 import "../../../ERC712/implementations/UsingERC712WithDynamicChainId.sol";
 import "../../../ERC712/implementations/ImplementingExternalDomainSeparator.sol";
 
-import "../../../../_lib/openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
-import "../../../../_lib/openzeppelin/contracts/utils/Address.sol";
+import "../../..//openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "../../../openzeppelin/contracts/utils/Address.sol";
 
 abstract contract UsingERC4494Permit is
 	IERC4494,
@@ -113,7 +113,7 @@ abstract contract UsingERC4494Permit is
 				keccak256(abi.encode(PERMIT_TYPEHASH, spender, id, nonce, deadline))
 			)
 		);
-		require(SignatureChecker.isValidSignatureNow(signer, digest, sig), "INVALID_SIGNATURE");
+		require(Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig), "INVALID_SIGNATURE");
 	}
 
 	function _requireValidPermitForAll(
@@ -130,6 +130,6 @@ abstract contract UsingERC4494Permit is
 				keccak256(abi.encode(PERMIT_FOR_ALL_TYPEHASH, spender, nonce, deadline))
 			)
 		);
-		require(SignatureChecker.isValidSignatureNow(signer, digest, sig), "INVALID_SIGNATURE");
+		require(Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig), "INVALID_SIGNATURE");
 	}
 }

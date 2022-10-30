@@ -5,10 +5,10 @@ import "../interfaces/IERC721Receiver.sol";
 import "../interfaces/IERC721.sol";
 import "./ImplementingERC721Internal.sol";
 
-import "../../../_lib/openzeppelin/contracts/utils/Address.sol";
+import "../..//openzeppelin/contracts/utils/Address.sol";
 
 abstract contract ERC721 is IERC721, ImplementingERC721Internal {
-	using Address for address;
+	using Openzeppelin_Address for address;
 
 	bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
 	bytes4 internal constant ERC165ID = 0x01ffc9a7;

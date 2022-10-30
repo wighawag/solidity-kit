@@ -15,7 +15,7 @@ const config: HardhatUserConfig = {
 		],
 	},
 	paths: {
-		sources: 'src',
+		sources: 'solc_0.8',
 	},
 };
 

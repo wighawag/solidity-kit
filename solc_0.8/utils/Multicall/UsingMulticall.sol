@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../../_lib/openzeppelin/contracts/utils/Address.sol";
+import "../../openzeppelin/contracts/utils/Address.sol";
 
 contract UsingMulticall {
-	using Address for address;
+	using Openzeppelin_Address for address;
 
 	// from https://github.com/Uniswap/v3-periphery/blob/main/contracts/base/Multicall.sol
 	/// @notice Call multiple functions in the current contract and return the data from all of them if they all succeed.

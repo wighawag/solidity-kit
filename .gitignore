@@ -1,7 +1,6 @@
 cache/
 artifacts/
 node_modules/
-_lib/
 
 .vscode/
 !.vscode/*.default
