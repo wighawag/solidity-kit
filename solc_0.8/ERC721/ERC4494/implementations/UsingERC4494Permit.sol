@@ -20,7 +20,7 @@ abstract contract UsingERC4494Permit is
 	bytes32 public constant PERMIT_TYPEHASH =
 		keccak256("Permit(address spender,uint256 tokenId,uint256 nonce,uint256 deadline)");
 	bytes32 public constant PERMIT_FOR_ALL_TYPEHASH =
-		keccak256("PermitForAll(address spender,uint256 nonce,uint256 deadline)");
+		keccak256("PermitForAll(address owner,address spender,uint256 nonce,uint256 deadline)");
 
 	mapping(address => uint256) internal _userNonces;
 
@@ -127,7 +127,7 @@ abstract contract UsingERC4494Permit is
 			abi.encodePacked(
 				"\x19\x01",
 				DOMAIN_SEPARATOR(),
-				keccak256(abi.encode(PERMIT_FOR_ALL_TYPEHASH, spender, nonce, deadline))
+				keccak256(abi.encode(PERMIT_FOR_ALL_TYPEHASH, signer, spender, nonce, deadline))
 			)
 		);
 		require(Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig), "INVALID_SIGNATURE");
