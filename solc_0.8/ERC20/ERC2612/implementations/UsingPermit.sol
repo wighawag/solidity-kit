@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../../implementations/ImplementingERC20Internal.sol";
 import "../interfaces/IERC2612Standalone.sol";
-import "../../../ERC712/implementations/UsingERC712WithDynamicChainId.sol";
+import "../../../ERC712/implementations/UsingERC712.sol";
 import "./ImplementingExternalDomainSeparator.sol";
 
 abstract contract UsingPermit is

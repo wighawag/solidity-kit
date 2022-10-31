@@ -8,14 +8,17 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 	uint256 private immutable _deploymentChainId;
 	bytes32 private immutable _deploymentDomainSeparator;
 
-	constructor() {
+	constructor(address verifyingContract) {
 		uint256 chainId;
 		assembly {
 			chainId := chainid()
 		}
 
 		_deploymentChainId = chainId;
-		_deploymentDomainSeparator = _calculateDomainSeparator(chainId);
+		_deploymentDomainSeparator = _calculateDomainSeparator(
+			chainId,
+			verifyingContract == address(0) ? address(this) : verifyingContract
+		);
 	}
 
 	function _currentDomainSeparator() internal view returns (bytes32) {
@@ -25,18 +28,21 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 		}
 
 		// in case a fork happen, to support the chain that had to change its chainId, we compute the domain operator
-		return chainId == _deploymentChainId ? _deploymentDomainSeparator : _calculateDomainSeparator(chainId);
+		return
+			chainId == _deploymentChainId
+				? _deploymentDomainSeparator
+				: _calculateDomainSeparator(chainId, address(this));
 	}
 
 	/// @dev Calculate the Domain Separator used to compute ERC712 hash
-	function _calculateDomainSeparator(uint256 chainId) private view returns (bytes32) {
+	function _calculateDomainSeparator(uint256 chainId, address verifyingContract) private view returns (bytes32) {
 		return
 			keccak256(
 				abi.encode(
 					keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)"),
 					keccak256(bytes(name())),
 					chainId,
-					address(this)
+					verifyingContract
 				)
 			);
 	}

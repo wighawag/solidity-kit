@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "../../implementations/ImplementingERC721Internal.sol";
 import "../../../ERC165/implementations/UsingERC165Internal.sol";
 import "../interfaces/IERC4494.sol";
-import "../../../ERC712/implementations/UsingERC712WithDynamicChainId.sol";
+import "../../../ERC712/implementations/UsingERC712.sol";
 import "../../../ERC712/implementations/ImplementingExternalDomainSeparator.sol";
 
 import "../../..//openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
