@@ -5,6 +5,10 @@ import "../interfaces/IERC2981.sol";
 import "../../ERC165/implementations/UsingERC165Internal.sol";
 import "../../utils/Guardian/libraries/Guarded.sol";
 
+// TODO Global Errors ?
+error NotAuthorized();
+error RoyaltyTooHigh(uint256 royaltyPer20ThousandsProvided, uint256 max);
+
 contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 	event RoyaltySet(address receiver, uint256 royaltyPer10Thousands);
 	event RoyaltyAdminSet(address newRoyaltyAdmin);
@@ -37,11 +41,7 @@ contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 		emit RoyaltySet(initialRoyaltyReceiver, imitialRoyaltyPer10Thousands);
 	}
 
-	/// @notice Called with the sale price to determine how much royalty is owed and to whom.
-	/// @param //id - the token queried for royalty information.
-	/// @param salePrice - the sale price of the token specified by id.
-	/// @return receiver - address of who should be sent the royalty payment.
-	/// @return royaltyAmount - the royalty payment amount for salePrice.
+	/// @inheritdoc IERC2981
 	function royaltyInfo(
 		uint256, /*id*/
 		uint256 salePrice
@@ -54,8 +54,12 @@ contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 	/// @param newReceiver the address that should receive the royalty proceeds.
 	/// @param royaltyPer10Thousands the share of the salePrice (in 1/10000) given to the receiver.
 	function setRoyaltyParameters(address newReceiver, uint96 royaltyPer10Thousands) external {
-		require(msg.sender == royaltyAdmin, "NOT_AUTHORIZED");
-		require(royaltyPer10Thousands <= 50, "ROYALTY_TOO_HIGH");
+		if (msg.sender != royaltyAdmin) {
+			revert NotAuthorized();
+		}
+		if (royaltyPer10Thousands > 50) {
+			revert RoyaltyTooHigh(royaltyPer10Thousands, 50);
+		}
 		if (_royalty.receiver != newReceiver || _royalty.per10Thousands != royaltyPer10Thousands) {
 			_royalty.receiver = newReceiver;
 			_royalty.per10Thousands = royaltyPer10Thousands;
@@ -68,7 +72,9 @@ contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 	 * Can only be called by the current royalty admin.
 	 */
 	function setRoyaltyAdmin(address newRoyaltyAdmin) external {
-		require(msg.sender == royaltyAdmin || Guarded.isGuardian(msg.sender, newRoyaltyAdmin), "NOT_AUTHORIZED");
+		if (msg.sender != royaltyAdmin && !Guarded.isGuardian(msg.sender, newRoyaltyAdmin)) {
+			revert NotAuthorized();
+		}
 		if (royaltyAdmin != newRoyaltyAdmin) {
 			royaltyAdmin = newRoyaltyAdmin;
 			emit RoyaltyAdminSet(newRoyaltyAdmin);

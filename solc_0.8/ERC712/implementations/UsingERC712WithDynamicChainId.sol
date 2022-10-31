@@ -47,6 +47,7 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 			);
 	}
 
+	/// @inheritdoc IERC5267
 	function eip712Domain()
 		external
 		view

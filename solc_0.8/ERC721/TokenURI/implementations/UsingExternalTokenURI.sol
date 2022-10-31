@@ -4,6 +4,9 @@ pragma solidity ^0.8.0;
 import "../interfaces/ITokenURI.sol";
 import "../../../utils/Guardian/libraries/Guarded.sol";
 
+// TODO Global Errors ?
+error NotAuthorized();
+
 contract UsingExternalTokenURI {
 	event TokenURIContractSet(ITokenURI newTokenURIContract);
 	event TokenURIAdminSet(address newTokenURIAdmin);
@@ -30,7 +33,9 @@ contract UsingExternalTokenURI {
 	/// @notice set the new tokenURIAdmin that can change the tokenURI
 	/// Can only be called by the current tokenURI admin.
 	function setTokenURIAdmin(address newTokenURIAdmin) external {
-		require(msg.sender == tokenURIAdmin || Guarded.isGuardian(msg.sender, newTokenURIAdmin), "NOT_AUTHORIZED");
+		if (msg.sender != tokenURIAdmin && !Guarded.isGuardian(msg.sender, newTokenURIAdmin)) {
+			revert NotAuthorized();
+		}
 		if (tokenURIAdmin != newTokenURIAdmin) {
 			tokenURIAdmin = newTokenURIAdmin;
 			emit TokenURIAdminSet(newTokenURIAdmin);
@@ -45,7 +50,9 @@ contract UsingExternalTokenURI {
 	/// @notice set a new tokenURI contract, that generate the metadata including the wav file, Can only be set by the `tokenURIAdmin`.
 	/// @param newTokenURIContract The address of the new tokenURI contract.
 	function setTokenURIContract(ITokenURI newTokenURIContract) external {
-		require(msg.sender == tokenURIAdmin, "NOT_AUTHORIZED");
+		if (msg.sender != tokenURIAdmin) {
+			revert NotAuthorized();
+		}
 		if (tokenURIContract != newTokenURIContract) {
 			tokenURIContract = newTokenURIContract;
 			emit TokenURIContractSet(newTokenURIContract);

@@ -30,8 +30,8 @@ interface IERC4494Alternative is IERC165 {
 
 	/// @notice Allows to retrieve current nonce for token
 	/// @param tokenId token id
-	/// @return current token nonce
-	function tokenNonces(uint256 tokenId) external view returns (uint256);
+	/// @return nonce token nonce
+	function tokenNonces(uint256 tokenId) external view returns (uint256 nonce);
 
 	/// @notice function to be called by anyone to approve `spender` using a Permit signature
 	/// @dev Anyone can call this to approve `spender`, even a third-party

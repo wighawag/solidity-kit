@@ -10,8 +10,13 @@ import "../../../ERC712/implementations/ImplementingExternalDomainSeparator.sol"
 import "../../..//openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "../../../openzeppelin/contracts/utils/Address.sol";
 
+error NonExistentToken(uint256 tokenID);
+error DeadlineOver(uint256 currentTime, uint256 deadline);
+error InvalidSignature();
+
 abstract contract UsingERC4494Permit is
 	IERC4494,
+	IERC4494Alternative,
 	ImplementingERC721Internal,
 	UsingERC165Internal,
 	ImplementingExternalDomainSeparator,
@@ -31,32 +36,35 @@ abstract contract UsingERC4494Permit is
 		return _userNonces[account];
 	}
 
-	/// @notice return the token nonce, used for individual approve permit or other token related matter
-	/// @param id token id to query
-	/// @return nonce
+	/// @inheritdoc IERC4494
 	function nonces(uint256 id) public view virtual returns (uint256 nonce) {
 		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(id);
-		require(owner != address(0), "NONEXISTENT_TOKEN");
+		if (owner == address(0)) {
+			revert NonExistentToken(id);
+		}
 		return blockNumber;
 	}
 
-	/// @notice return the token nonce, used for individual approve permit or other token related matter
-	/// @param id token id to query
-	/// @return nonce
-	function tokenNonces(uint256 id) external view returns (uint256 nonce) {
-		return nonces(id);
+	/// @inheritdoc IERC4494Alternative
+	function tokenNonces(uint256 tokenId) external view returns (uint256 nonce) {
+		return nonces(tokenId);
 	}
 
+	/// @inheritdoc IERC4494
 	function permit(
 		address spender,
 		uint256 tokenId,
 		uint256 deadline,
 		bytes memory sig
-	) external {
-		require(deadline >= block.timestamp, "PERMIT_DEADLINE_EXPIRED");
+	) external override(IERC4494, IERC4494Alternative) {
+		if (block.timestamp > deadline) {
+			revert DeadlineOver(block.timestamp, deadline);
+		}
 
 		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(tokenId);
-		require(owner != address(0), "NONEXISTENT_TOKEN");
+		if (owner == address(0)) {
+			revert NonExistentToken(tokenId);
+		}
 
 		// We use blockNumber as nonce as we already store it per tokens. It can thus act as an increasing transfer counter.
 		// while technically multiple transfer could happen in the same block, the signed message would be using a previous block.
@@ -72,16 +80,16 @@ abstract contract UsingERC4494Permit is
 		uint256 deadline,
 		bytes memory sig
 	) external {
-		require(deadline >= block.timestamp, "PERMIT_DEADLINE_EXPIRED");
+		if (block.timestamp > deadline) {
+			revert DeadlineOver(block.timestamp, deadline);
+		}
 
 		_requireValidPermitForAll(signer, spender, deadline, _userNonces[signer]++, sig);
 
 		_setApprovalForAll(signer, spender, true);
 	}
 
-	/// @notice Check if the contract supports an interface.
-	/// @param id The id of the interface.
-	/// @return Whether the interface is supported.
+	/// @inheritdoc IERC165
 	function supportsInterface(bytes4 id) public view virtual override(IERC165, UsingERC165Internal) returns (bool) {
 		return
 			super.supportsInterface(id) ||
@@ -89,11 +97,12 @@ abstract contract UsingERC4494Permit is
 			id == type(IERC4494Alternative).interfaceId;
 	}
 
+	/// @inheritdoc ImplementingExternalDomainSeparator
 	function DOMAIN_SEPARATOR()
 		public
 		view
 		virtual
-		override(IERC4494, ImplementingExternalDomainSeparator)
+		override(IERC4494, IERC4494Alternative, ImplementingExternalDomainSeparator)
 		returns (bytes32);
 
 	// -------------------------------------------------------- INTERNAL --------------------------------------------------------------------
@@ -113,7 +122,9 @@ abstract contract UsingERC4494Permit is
 				keccak256(abi.encode(PERMIT_TYPEHASH, spender, id, nonce, deadline))
 			)
 		);
-		require(Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig), "INVALID_SIGNATURE");
+		if (!Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig)) {
+			revert InvalidSignature();
+		}
 	}
 
 	function _requireValidPermitForAll(
@@ -130,6 +141,8 @@ abstract contract UsingERC4494Permit is
 				keccak256(abi.encode(PERMIT_FOR_ALL_TYPEHASH, signer, spender, nonce, deadline))
 			)
 		);
-		require(Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig), "INVALID_SIGNATURE");
+		if (!Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig)) {
+			revert InvalidSignature();
+		}
 	}
 }

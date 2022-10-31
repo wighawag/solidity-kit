@@ -16,7 +16,7 @@ contract Owned is IERC173 {
 	bytes32 internal constant ADDR_REVERSE_NODE = 0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
 	ENS internal immutable _ens;
 
-	///@notice the address of the current owner, that is able to set ENS names and withdraw ERC20 owned by the contract.
+	/// @inheritdoc IERC173
 	address public owner;
 
 	constructor(address initialOwner, address ens) {
@@ -27,25 +27,33 @@ contract Owned is IERC173 {
 		_ens = ENS(ens);
 	}
 
+	/// @notice set the reverse-record name for this contract
+	/// @param name ENS name to set
 	function setENSName(string memory name) external {
-		require(msg.sender == owner, "NOT_AUTHORIZED");
+		if (msg.sender != owner) {
+			revert IERC173.NotAuthorized();
+		}
 		ReverseRegistrar reverseRegistrar = ReverseRegistrar(_ens.owner(ADDR_REVERSE_NODE));
 		reverseRegistrar.setName(name);
 	}
 
-	/**
-	 * @notice Transfers ownership of the contract to a new account (`newOwner`).
-	 * Can only be called by the current owner.
-	 */
+	/// @inheritdoc IERC173
 	function transferOwnership(address newOwner) external {
 		address oldOwner = owner;
-		require(msg.sender == oldOwner);
+		if (msg.sender != oldOwner) {
+			revert NotAuthorized();
+		}
 		owner = newOwner;
 		emit OwnershipTransferred(oldOwner, newOwner);
 	}
 
+	/// @notice withdraw the total balance of a particular ERC20 token owned by this contract.
+	/// @param token ERC20 contract address to withdraw
+	/// @param to address that will receive the tokens
 	function withdrawERC20(IERC20 token, address to) external {
-		require(msg.sender == owner, "NOT_AUTHORIZED");
+		if (msg.sender != owner) {
+			revert NotAuthorized();
+		}
 		token.transfer(to, token.balanceOf(address(this)));
 	}
 }

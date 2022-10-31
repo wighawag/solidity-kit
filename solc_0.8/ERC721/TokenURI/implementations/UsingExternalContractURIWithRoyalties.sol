@@ -41,10 +41,9 @@ contract UsingExternalContractURIWithRoyalties is UsingGlobalRoyalties {
 	/// @notice set the new contractURIAdmin that can change the contractURI
 	/// Can only be called by the current contractURI admin.
 	function setContractURIAdmin(address newContractURIAdmin) external {
-		require(
-			msg.sender == contractURIAdmin || Guarded.isGuardian(msg.sender, newContractURIAdmin),
-			"NOT_AUTHORIZED"
-		);
+		if (msg.sender != contractURIAdmin && !Guarded.isGuardian(msg.sender, newContractURIAdmin)) {
+			revert NotAuthorized();
+		}
 		if (contractURIAdmin != newContractURIAdmin) {
 			contractURIAdmin = newContractURIAdmin;
 			emit ContractURIAdminSet(newContractURIAdmin);
@@ -59,7 +58,9 @@ contract UsingExternalContractURIWithRoyalties is UsingGlobalRoyalties {
 	/// @notice set a new contractURI contract, that generate the metadata including the wav file, Can only be set by the `contractURIAdmin`.
 	/// @param newContractURIAddress The address of the new contractURI contract.
 	function setContractURI(IContractURI newContractURIAddress) external {
-		require(msg.sender == contractURIAdmin, "NOT_AUTHORIZED");
+		if (msg.sender != contractURIAdmin) {
+			revert NotAuthorized();
+		}
 		if (contractURIAddress != newContractURIAddress) {
 			contractURIAddress = newContractURIAddress;
 			emit ContractURIAddressSet(newContractURIAddress);

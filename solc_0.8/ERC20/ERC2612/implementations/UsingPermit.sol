@@ -6,6 +6,10 @@ import "../interfaces/IERC2612Standalone.sol";
 import "../../../ERC712/implementations/UsingERC712.sol";
 import "./ImplementingExternalDomainSeparator.sol";
 
+error InvalidAddress(address addr);
+error InvalidSignature();
+error DeadlineOver(uint256 currentTime, uint256 deadline);
+
 abstract contract UsingPermit is
 	ImplementingERC20Internal,
 	ImplementingExternalDomainSeparator,
@@ -17,10 +21,12 @@ abstract contract UsingPermit is
 
 	mapping(address => uint256) internal _nonces;
 
+	/// @inheritdoc IERC2612Standalone
 	function nonces(address owner) external view returns (uint256) {
 		return _nonces[owner];
 	}
 
+	/// @inheritdoc IERC2612Standalone
 	function DOMAIN_SEPARATOR()
 		public
 		view
@@ -28,6 +34,7 @@ abstract contract UsingPermit is
 		override(IERC2612Standalone, ImplementingExternalDomainSeparator)
 		returns (bytes32);
 
+	/// @inheritdoc IERC2612Standalone
 	function permit(
 		address owner,
 		address spender,
@@ -37,7 +44,9 @@ abstract contract UsingPermit is
 		bytes32 r,
 		bytes32 s
 	) external override {
-		require(owner != address(0), "INVALID_ZERO_ADDRESS");
+		if (owner == address(0)) {
+			revert InvalidAddress(address(0));
+		}
 
 		uint256 currentNonce = _nonces[owner];
 		bytes32 digest = keccak256(
@@ -47,8 +56,12 @@ abstract contract UsingPermit is
 				keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, currentNonce, deadline))
 			)
 		);
-		require(owner == ecrecover(digest, v, r, s), "INVALID_SIGNATURE");
-		require(deadline == 0 || block.timestamp <= deadline, "TOO_LATE");
+		if (owner != ecrecover(digest, v, r, s)) {
+			revert InvalidSignature();
+		}
+		if (deadline != 0 && block.timestamp > deadline) {
+			revert DeadlineOver(block.timestamp, deadline);
+		}
 
 		_nonces[owner] = currentNonce + 1;
 		_approveFor(owner, spender, value);

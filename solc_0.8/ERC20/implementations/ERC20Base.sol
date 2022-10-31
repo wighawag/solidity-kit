@@ -5,6 +5,12 @@ import "../interfaces/IERC20.sol";
 import "./ImplementingERC20Internal.sol";
 import "../../utils/Constants.sol";
 
+error InvalidMsgValue(uint256 provided, uint256 expected);
+error InvalidTotalAmount(uint256 provided, uint256 expected);
+error InvalidAddress(address addr);
+error NotAuthorizedAllowance(uint256 currentAllowance, uint256 expected);
+error NotEnoughTokens(uint256 currentBalance, uint256 expected);
+
 interface ITransferReceiver {
 	function onTokenTransfer(
 		address,
@@ -77,9 +83,13 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 
 	function distributeAlongWithETH(address payable[] memory tos, uint256 totalAmount) external payable returns (bool) {
 		uint256 val = msg.value / tos.length;
-		require(msg.value == val * tos.length, "INVALID_MSG_VALUE");
+		if (msg.value != val * tos.length) {
+			revert InvalidMsgValue(msg.value, val * tos.length);
+		}
 		uint256 amount = totalAmount / tos.length;
-		require(totalAmount == amount * tos.length, "INVALID_TOTAL_AMOUNT");
+		if (totalAmount != amount * tos.length) {
+			revert InvalidTotalAmount(totalAmount, amount * tos.length);
+		}
 		for (uint256 i = 0; i < tos.length; i++) {
 			_transfer(msg.sender, tos[i], amount);
 			tos[i].transfer(val);
@@ -144,7 +154,9 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		address spender,
 		uint256 amount
 	) internal override {
-		require(owner != address(0) && spender != address(0), "INVALID_ZERO_ADDRESS");
+		if (owner == address(0) || spender == address(0)) {
+			revert InvalidAddress(address(0));
+		}
 		_allowances[owner][spender] = amount;
 		emit Approval(owner, spender, amount);
 	}
@@ -160,7 +172,9 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 			uint256 currentAllowance = _allowances[from][msg.sender];
 			if (currentAllowance != type(uint256).max) {
 				// save gas when allowance is maximal by not reducing it (see https://github.com/ethereum/EIPs/issues/717)
-				require(currentAllowance >= amount, "NOT_AUTHOIZED_ALLOWANCE");
+				if (currentAllowance < amount) {
+					revert NotAuthorizedAllowance(currentAllowance, amount);
+				}
 				_allowances[from][msg.sender] = currentAllowance - amount;
 			}
 		}
@@ -172,10 +186,13 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		address to,
 		uint256 amount
 	) internal {
-		require(to != address(0), "INVALID_ZERO_ADDRESS");
-		require(to != address(this), "INVALID_THIS_ADDRESS");
+		if (to == address(0) || to == address(this)) {
+			revert InvalidAddress(to);
+		}
 		uint256 currentBalance = _balances[from];
-		require(currentBalance >= amount, "NOT_ENOUGH_TOKENS");
+		if (currentBalance < amount) {
+			revert NotEnoughTokens(currentBalance, amount);
+		}
 		_balances[from] = currentBalance - amount;
 		_balances[to] += amount;
 		emit Transfer(from, to, amount);
@@ -198,7 +215,9 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 
 	function _burnFrom(address from, uint256 amount) internal override {
 		uint256 currentBalance = _balances[from];
-		require(currentBalance >= amount, "NOT_ENOUGH_TOKENS");
+		if (currentBalance < amount) {
+			revert NotEnoughTokens(currentBalance, amount);
+		}
 		_balances[from] = currentBalance - amount;
 		_totalSupply -= amount;
 		emit Transfer(from, address(0), amount);

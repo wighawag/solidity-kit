@@ -11,7 +11,9 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 	/// @param owner The address to look for.
 	/// @return balance The number of tokens owned by the address.
 	function balanceOf(address owner) public view override returns (uint256 balance) {
-		require(owner != address(0), "ZERO_ADDRESS_OWNER");
+		if (owner == address(0)) {
+			revert InvalidOwner(owner);
+		}
 		balance = _balances[owner];
 		(, uint256 blockNumber) = _ownerAndBlockNumberOf(uint256(uint160(owner)));
 

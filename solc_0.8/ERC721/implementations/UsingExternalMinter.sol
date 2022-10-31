@@ -3,6 +3,9 @@ pragma solidity ^0.8.0;
 
 import "../../utils/Guardian/libraries/Guarded.sol";
 
+// TODO Global Errors ?
+error NotAuthorized();
+
 contract UsingExternalMinter {
 	event MinterAdminSet(address newMinterAdmin);
 	event MinterSet(address newMinter);
@@ -27,7 +30,9 @@ contract UsingExternalMinter {
 	 * Can only be called by the current minter admin.
 	 */
 	function setMinterAdmin(address newMinterAdmin) external {
-		require(msg.sender == minterAdmin || Guarded.isGuardian(msg.sender, newMinterAdmin), "NOT_AUTHORIZED");
+		if (msg.sender != minterAdmin && !Guarded.isGuardian(msg.sender, newMinterAdmin)) {
+			revert NotAuthorized();
+		}
 		if (newMinterAdmin != minterAdmin) {
 			minterAdmin = newMinterAdmin;
 			emit MinterAdminSet(newMinterAdmin);
@@ -39,7 +44,9 @@ contract UsingExternalMinter {
 	 * Can only be called by the minter admin.
 	 */
 	function setMinter(address newMinter) external {
-		require(msg.sender == minterAdmin, "NOT_AUTHORIZED");
+		if (msg.sender != minterAdmin) {
+			revert NotAuthorized();
+		}
 		if (minter != newMinter) {
 			minter = newMinter;
 			emit MinterSet(newMinter);
