@@ -39,7 +39,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		address to,
 		uint256 id
 	) external override {
-		(address owner, bool operatorEnabled) = _ownerAndOperatorEnabledOf(id);
+		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(id);
 		require(owner != address(0), "NONEXISTENT_TOKEN");
 		require(owner == from, "NOT_OWNER");
 		require(to != address(0), "NOT_TO_ZEROADDRESS");
@@ -50,7 +50,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 				"UNAUTHORIZED_TRANSFER"
 			);
 		}
-		_transferFrom(from, to, id);
+		_transferFrom(from, to, id, blockNumber != 0);
 	}
 
 	/// @notice Transfer a token between 2 addresses letting the receiver know of the transfer.
@@ -150,7 +150,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		uint256 id,
 		bytes memory data
 	) public override {
-		(address owner, bool operatorEnabled) = _ownerAndOperatorEnabledOf(id);
+		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(id);
 		require(owner != address(0), "NONEXISTENT_TOKEN");
 		require(owner == from, "NOT_OWNER");
 		require(to != address(0), "NOT_TO_ZEROADDRESS");
@@ -161,7 +161,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 				"UNAUTHORIZED_TRANSFER"
 			);
 		}
-		_safeTransferFrom(from, to, id, data);
+		_safeTransferFrom(from, to, id, blockNumber != 0, data);
 	}
 
 	/// @notice Query if a contract implements an interface
@@ -187,13 +187,18 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	// INTERNALS
 	// ------------------------------------------------------------------------------------------------------------------
 
+	function _safeMint(address to, uint256 id) internal {
+		_safeTransferFrom(address(0), to, id, false, "");
+	}
+
 	function _safeTransferFrom(
 		address from,
 		address to,
 		uint256 id,
+		bool registered,
 		bytes memory data
 	) internal {
-		_transferFrom(from, to, id);
+		_transferFrom(from, to, id, registered);
 		if (to.isContract()) {
 			require(_checkOnERC721Received(msg.sender, from, to, id, data), "ERC721_TRANSFER_REJECTED");
 		}
@@ -202,11 +207,12 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	function _transferFrom(
 		address from,
 		address to,
-		uint256 id
-	) internal {
+		uint256 id,
+		bool registered
+	) internal virtual {
 		unchecked {
 			_balances[to]++;
-			if (from != address(0)) {
+			if (registered) {
 				_balances[from]--;
 			}
 		}
@@ -292,6 +298,27 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	{
 		uint256 data = _owners[id];
 		owner = address(uint160(data));
+		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
+	}
+
+	// @dev Get the owner, the last transfer's blockNumber and operatorEnabled status of a token.
+	/// @param id The token to query.
+	/// @return owner The owner of the token.
+	/// @return blockNumber the blockNumber at which the owner became the owner (last transfer).
+	/// @return operatorEnabled Whether or not operators are enabled for this token.
+	function _ownerBlockNumberAndOperatorEnabledOf(uint256 id)
+		internal
+		view
+		virtual
+		returns (
+			address owner,
+			uint256 blockNumber,
+			bool operatorEnabled
+		)
+	{
+		uint256 data = _owners[id];
+		owner = address(uint160(data));
+		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
 		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 	}
 }

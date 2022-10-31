@@ -14,9 +14,14 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		require(owner != address(0), "ZERO_ADDRESS_OWNER");
 		balance = _balances[owner];
 		(, uint256 blockNumber) = _ownerAndBlockNumberOf(uint256(uint160(owner)));
+
 		if (blockNumber == 0) {
 			// owned token was never registered
+			// unchecked because we might have underflow if token transfered and we want to overflow back to zero
+			// TODO
+			// unchecked {
 			balance++;
+			// }
 		}
 	}
 
@@ -41,6 +46,17 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 			ownersData[i].lastTransferBlockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 		}
 	}
+
+	/// @notice Count NFTs tracked by this contract
+	/// @return A count of valid NFTs tracked by this contract, where each one of
+	///  them has an assigned and queryable owner not equal to the zero address
+	function totalSupply() external pure returns (uint256) {
+		return 2**160 - 1; // do not count token with id zero whose owner would otherwise be the zero address
+	}
+
+	// ------------------------------------------------------------------------------------------------------------------
+	// INTERNALS
+	// ------------------------------------------------------------------------------------------------------------------
 
 	/// @dev See ownerOf
 	function _ownerOf(uint256 id) internal view override returns (address owner) {
@@ -75,10 +91,23 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 	}
 
-	/// @notice Count NFTs tracked by this contract
-	/// @return A count of valid NFTs tracked by this contract, where each one of
-	///  them has an assigned and queryable owner not equal to the zero address
-	function totalSupply() external pure returns (uint256) {
-		return 2**160 - 1; // do not count token with id zero whose owner would otherwise be the zero address
+	/// @dev See _ownerBlockNumberAndOperatorEnabledOf
+	function _ownerBlockNumberAndOperatorEnabledOf(uint256 id)
+		internal
+		view
+		override
+		returns (
+			address owner,
+			uint256 blockNumber,
+			bool operatorEnabled
+		)
+	{
+		uint256 data = _owners[id];
+		owner = address(uint160(data));
+		if (owner == address(0) && id < 2**160) {
+			owner = address(uint160(id));
+		}
+		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
+		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 	}
 }
