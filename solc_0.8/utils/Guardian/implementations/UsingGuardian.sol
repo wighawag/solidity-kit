@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// TODO Global Errors ?
+error NotAuthorized();
+
 contract UsingGuardian {
 	event GuardianSet(address newGuardian);
 
@@ -32,7 +35,9 @@ contract UsingGuardian {
 		assembly {
 			currentGuardian := sload(0x8fbcb4375b910093bcf636b6b2f26b26eda2a29ef5a8ee7de44b5743c3bf9a27)
 		}
-		require(msg.sender == currentGuardian, "NOT_AUTHORIZED");
+		if (msg.sender != currentGuardian) {
+			revert NotAuthorized();
+		}
 		if (currentGuardian != newGuardian) {
 			assembly {
 				sstore(0x8fbcb4375b910093bcf636b6b2f26b26eda2a29ef5a8ee7de44b5743c3bf9a27, newGuardian)
