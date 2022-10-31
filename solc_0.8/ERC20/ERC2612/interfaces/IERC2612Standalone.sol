@@ -5,7 +5,14 @@ pragma solidity ^0.8.0;
 import "../../../ERC712/interfaces/IERC5267.sol";
 
 interface IERC2612Standalone is IERC5267 {
-	// TODO doc
+	/// @notice allow `spender` to spend `value` amount of token on behalf of `owner`
+	/// @param owner owner of the tokens
+	/// @param spender address allowed to spend on behalf of the owner.
+	/// @param value amount of token allowed to be spent
+	/// @param deadline timestamp in seconds after which the permit is not valid.
+	/// @param v signature part v
+	/// @param r signature part r
+	/// @param s signature part s
 	function permit(
 		address owner,
 		address spender,
@@ -16,9 +23,11 @@ interface IERC2612Standalone is IERC5267 {
 		bytes32 s
 	) external;
 
-	// TODO doc
-	function nonces(address owner) external view returns (uint256);
+	/// @notice return the current nonce of the owner
+	/// @param owner address queried
+	/// @return nonce nonce value
+	function nonces(address owner) external view returns (uint256 nonce);
 
-	// TODO doc
+	/// @notice EIP-712 Domain separator hash
 	function DOMAIN_SEPARATOR() external view returns (bytes32);
 }

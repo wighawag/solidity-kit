@@ -196,12 +196,6 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		return id == 0x01ffc9a7 || id == 0x80ac58cd || id == 0x5b5e139f;
 	}
 
-	/// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
-	/// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
-	///  3986. The URI may point to a JSON file that conforms to the "ERC721
-	///  Metadata JSON Schema".
-	function tokenURI(uint256 id) external view virtual returns (string memory);
-
 	// ------------------------------------------------------------------------------------------------------------------
 	// INTERNALS
 	// ------------------------------------------------------------------------------------------------------------------

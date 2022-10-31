@@ -50,14 +50,17 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return _totalSupply;
 	}
 
+	/// @inheritdoc IERC20
 	function totalSupply() external view override returns (uint256) {
 		return _internal_totalSupply();
 	}
 
+	/// @inheritdoc IERC20
 	function balanceOf(address owner) external view override returns (uint256) {
 		return _balances[owner];
 	}
 
+	/// @inheritdoc IERC20
 	function allowance(address owner, address spender) external view override returns (uint256) {
 		if (owner == address(this)) {
 			// see transferFrom: address(this) allows anyone
@@ -66,10 +69,12 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return _allowances[owner][spender];
 	}
 
-	function decimals() external pure virtual returns (uint8) {
+	/// @inheritdoc IERC20
+	function decimals() external pure virtual override returns (uint8) {
 		return uint8(18);
 	}
 
+	/// @inheritdoc IERC20
 	function transfer(address to, uint256 amount) external override returns (bool) {
 		_transfer(msg.sender, to, amount);
 		return true;
@@ -126,6 +131,7 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return ITransferOnBehalfReceiver(to).onTokenTransferedOnBehalf(msg.sender, forAddress, amount, data);
 	}
 
+	/// @inheritdoc IERC20
 	function transferFrom(
 		address from,
 		address to,
@@ -135,6 +141,7 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return true;
 	}
 
+	/// @inheritdoc IERC20
 	function approve(address spender, uint256 amount) external override returns (bool) {
 		_approveFor(msg.sender, spender, amount);
 		return true;
