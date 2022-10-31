@@ -11,7 +11,6 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	using Openzeppelin_Address for address;
 
 	bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
-	bytes4 internal constant ERC165ID = 0x01ffc9a7;
 
 	uint256 internal constant OPERATOR_FLAG = 0x8000000000000000000000000000000000000000000000000000000000000000;
 	uint256 internal constant NOT_OPERATOR_FLAG = 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
@@ -165,9 +164,12 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		_safeTransferFrom(from, to, id, data);
 	}
 
-	/// @notice Check if the contract supports an interface.
-	/// @param id The id of the interface.
-	/// @return Whether the interface is supported.
+	/// @notice Query if a contract implements an interface
+	/// @param id The interface identifier, as specified in ERC-165
+	/// @dev Interface identification is specified in ERC-165. This function
+	///  uses less than 30,000 gas.
+	/// @return `true` if the contract implements `interfaceID` and
+	///  `interfaceID` is not 0xffffffff, `false` otherwise
 	function supportsInterface(bytes4 id) public view virtual override returns (bool) {
 		/// 0x01ffc9a7 is ERC165.
 		/// 0x80ac58cd is ERC721
@@ -175,7 +177,15 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		return id == 0x01ffc9a7 || id == 0x80ac58cd || id == 0x5b5e139f;
 	}
 
+	/// @notice A distinct Uniform Resource Identifier (URI) for a given asset.
+	/// @dev Throws if `_tokenId` is not a valid NFT. URIs are defined in RFC
+	///  3986. The URI may point to a JSON file that conforms to the "ERC721
+	///  Metadata JSON Schema".
 	function tokenURI(uint256 id) external view virtual returns (string memory);
+
+	// ------------------------------------------------------------------------------------------------------------------
+	// INTERNALS
+	// ------------------------------------------------------------------------------------------------------------------
 
 	function _safeTransferFrom(
 		address from,
@@ -269,7 +279,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
 	}
 
-	// @dev Get the owner and operatorEnabled status of a token.
+	/// @dev Get the owner and the last transfer's blockNumber of a token.
 	/// @param id The token to query.
 	/// @return owner The owner of the token.
 	/// @return blockNumber the blockNumber at which the owner became the owner (last transfer).
