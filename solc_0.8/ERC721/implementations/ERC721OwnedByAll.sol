@@ -17,11 +17,9 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 
 		if (blockNumber == 0) {
 			// owned token was never registered
-			// unchecked because we might have underflow if token transfered and we want to overflow back to zero
-			// TODO
-			// unchecked {
-			balance++;
-			// }
+			unchecked {
+				balance++;
+			}
 		}
 	}
 
