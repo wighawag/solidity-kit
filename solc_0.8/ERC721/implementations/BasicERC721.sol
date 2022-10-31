@@ -53,7 +53,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 			revert InvalidAddress(to);
 		}
 		if (msg.sender != from) {
-			if (!(operatorEnabled && _operators[id] == msg.sender) || isApprovedForAll(from, msg.sender)) {
+			if (!(operatorEnabled && _operators[id] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
 				revert NotAuthorized();
 			}
 		}
@@ -176,7 +176,7 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		}
 
 		if (msg.sender != from) {
-			if (!((operatorEnabled && _operators[id] == msg.sender) || isApprovedForAll(from, msg.sender))) {
+			if (!((operatorEnabled && _operators[id] == msg.sender) && !isApprovedForAll(from, msg.sender))) {
 				revert NotAuthorized();
 			}
 		}
