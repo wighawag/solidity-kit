@@ -16,7 +16,7 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		(, uint256 blockNumber) = _ownerAndBlockNumberOf(uint256(uint160(owner)));
 
 		if (blockNumber == 0) {
-			// owned token was never registered
+			// self token was never registered
 			unchecked {
 				balance++;
 			}

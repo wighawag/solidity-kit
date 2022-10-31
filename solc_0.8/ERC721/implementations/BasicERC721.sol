@@ -13,7 +13,6 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
 
 	uint256 internal constant OPERATOR_FLAG = 0x8000000000000000000000000000000000000000000000000000000000000000;
-	uint256 internal constant NOT_OPERATOR_FLAG = 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
 
 	mapping(uint256 => uint256) internal _owners;
 	mapping(address => uint256) internal _balances;
@@ -252,16 +251,16 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	/// @param from The from address, may be different from msg.sender.
 	/// @param to The adddress we want to transfer to.
 	/// @param id The id of the token we would like to transfer.
-	/// @param _data Any additional data to send with the transfer.
+	/// @param data Any additional data to send with the transfer.
 	/// @return Whether the expected value of 0x150b7a02 is returned.
 	function _checkOnERC721Received(
 		address operator,
 		address from,
 		address to,
 		uint256 id,
-		bytes memory _data
+		bytes memory data
 	) internal returns (bool) {
-		bytes4 retval = IERC721Receiver(to).onERC721Received(operator, from, id, _data);
+		bytes4 retval = IERC721Receiver(to).onERC721Received(operator, from, id, data);
 		return (retval == ERC721_RECEIVED);
 	}
 
