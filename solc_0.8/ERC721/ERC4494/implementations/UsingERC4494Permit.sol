@@ -72,7 +72,7 @@ abstract contract UsingERC4494Permit is
 
 	/// @inheritdoc IERC4494PermitForAll
 	function permitForAll(
-		address signer,
+		address owner,
 		address spender,
 		uint256 deadline,
 		bytes memory sig
@@ -81,9 +81,9 @@ abstract contract UsingERC4494Permit is
 			revert DeadlineOver(block.timestamp, deadline);
 		}
 
-		_requireValidPermitForAll(signer, spender, deadline, _userNonces[signer]++, sig);
+		_requireValidPermitForAll(owner, spender, deadline, _userNonces[owner]++, sig);
 
-		_setApprovalForAll(signer, spender, true);
+		_setApprovalForAll(owner, spender, true);
 	}
 
 	/// @inheritdoc IERC165
@@ -127,7 +127,7 @@ abstract contract UsingERC4494Permit is
 	}
 
 	function _requireValidPermitForAll(
-		address signer,
+		address owner,
 		address spender,
 		uint256 deadline,
 		uint256 nonce,
@@ -137,10 +137,10 @@ abstract contract UsingERC4494Permit is
 			abi.encodePacked(
 				"\x19\x01",
 				DOMAIN_SEPARATOR(),
-				keccak256(abi.encode(PERMIT_FOR_ALL_TYPEHASH, signer, spender, nonce, deadline))
+				keccak256(abi.encode(PERMIT_FOR_ALL_TYPEHASH, owner, spender, nonce, deadline))
 			)
 		);
-		if (!Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig)) {
+		if (!Openzeppelin_SignatureChecker.isValidSignatureNow(owner, digest, sig)) {
 			revert InvalidSignature();
 		}
 	}
