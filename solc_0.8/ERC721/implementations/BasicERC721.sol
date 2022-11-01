@@ -22,14 +22,14 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 
 	/// @inheritdoc IERC721
 	function approve(address operator, uint256 tokenId) external override {
-		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(tokenId);
+		(address owner, uint256 nonce) = _ownerAndNonceOf(tokenId);
 		if (owner == address(0)) {
 			revert NonExistentToken(tokenId);
 		}
 		if (msg.sender != owner && !isApprovedForAll(owner, msg.sender)) {
 			revert NotAuthorized();
 		}
-		_approveFor(owner, blockNumber, operator, tokenId);
+		_approveFor(owner, nonce, operator, tokenId);
 	}
 
 	/// @inheritdoc IERC721
@@ -38,7 +38,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 		address to,
 		uint256 tokenId
 	) external override {
-		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(tokenId);
+		(address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenId);
 		if (owner == address(0)) {
 			revert NonExistentToken(tokenId);
 		}
@@ -53,7 +53,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 				revert NotAuthorized();
 			}
 		}
-		_transferFrom(from, to, tokenId, blockNumber != 0);
+		_transferFrom(from, to, tokenId, (nonce >> 24) != 0);
 	}
 
 	/// @inheritdoc IERC721
@@ -111,7 +111,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 		uint256 tokenId,
 		bytes memory data
 	) public override {
-		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(tokenId);
+		(address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenId);
 		if (owner == address(0)) {
 			revert NonExistentToken(tokenId);
 		}
@@ -128,7 +128,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 				revert NotAuthorized();
 			}
 		}
-		_safeTransferFrom(from, to, tokenId, blockNumber != 0, data);
+		_safeTransferFrom(from, to, tokenId, (nonce >> 24) != 0, data);
 	}
 
 	/// @inheritdoc IERC165
@@ -146,7 +146,9 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 		override
 		returns (address owner, uint256 blockNumber)
 	{
-		return _ownerAndBlockNumberOf(id);
+		(address currentOwner, uint256 nonce) = _ownerAndNonceOf(id);
+		owner = currentOwner;
+		blockNumber = (nonce >> 24);
 	}
 
 	/// @inheritdoc IERC721WithBlocknumber
@@ -160,7 +162,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 		for (uint256 i = 0; i < ids.length; i++) {
 			uint256 data = _owners[ids[i]];
 			ownersData[i].owner = address(uint160(data));
-			ownersData[i].lastTransferBlockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
+			ownersData[i].lastTransferBlockNumber = (data >> 184) & 0xFFFFFFFFFFFFFFFF;
 		}
 	}
 
@@ -199,21 +201,28 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 				_balances[from]--;
 			}
 		}
-		_owners[id] = (block.number << 160) | uint256(uint160(to));
+
+		// We encode the blockNumber in the token nonce. We can then use it for count voting.
+		_owners[id] = (block.number << 184) | uint256(uint160(to));
 		emit Transfer(from, to, id);
 	}
 
 	/// @dev See approve.
 	function _approveFor(
 		address owner,
-		uint256 blockNumber,
+		uint256 nonce,
 		address operator,
 		uint256 id
 	) internal override {
+		uint256 blockNumber = nonce >> 24;
+		uint256 newNonce = nonce + 1;
+		if (newNonce >> 24 != blockNumber) {
+			revert NonceOverflow();
+		}
 		if (operator == address(0)) {
-			_owners[id] = blockNumber != 0 ? (blockNumber << 160) | uint256(uint160(owner)) : 0;
+			_owners[id] = (newNonce << 160) | uint256(uint160(owner));
 		} else {
-			_owners[id] = OPERATOR_FLAG | (blockNumber != 0 ? (blockNumber << 160) | uint256(uint160(owner)) : 0);
+			_owners[id] = OPERATOR_FLAG | ((newNonce << 160) | uint256(uint160(owner)));
 			_operators[id] = operator;
 		}
 		emit Approval(owner, operator, id);
@@ -268,40 +277,34 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
 	}
 
-	/// @dev Get the owner and the last transfer's blockNumber of a token.
+	/// @dev Get the owner and the permit nonce of a token.
 	/// @param id The token to query.
 	/// @return owner The owner of the token.
-	/// @return blockNumber the blockNumber at which the owner became the owner (last transfer).
-	function _ownerAndBlockNumberOf(uint256 id)
-		internal
-		view
-		virtual
-		override
-		returns (address owner, uint256 blockNumber)
-	{
+	/// @return nonce the nonce for permit (also incluse the blocknumer in the 64 higer bits (88 bits in total))
+	function _ownerAndNonceOf(uint256 id) internal view virtual override returns (address owner, uint256 nonce) {
 		uint256 data = _owners[id];
 		owner = address(uint160(data));
-		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
+		nonce = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 	}
 
-	// @dev Get the owner, the last transfer's blockNumber and operatorEnabled status of a token.
+	// @dev Get the owner, the permit nonce of a token and operatorEnabled status of a token.
 	/// @param id The token to query.
 	/// @return owner The owner of the token.
-	/// @return blockNumber the blockNumber at which the owner became the owner (last transfer).
+	/// @return nonce the nonce for permit (also incluse the blocknumer in the 64 higer bits (88 bits in total))
 	/// @return operatorEnabled Whether or not operators are enabled for this token.
-	function _ownerBlockNumberAndOperatorEnabledOf(uint256 id)
+	function _ownerNonceAndOperatorEnabledOf(uint256 id)
 		internal
 		view
 		virtual
 		returns (
 			address owner,
-			uint256 blockNumber,
+			uint256 nonce,
 			bool operatorEnabled
 		)
 	{
 		uint256 data = _owners[id];
 		owner = address(uint160(data));
 		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
-		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
+		nonce = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 	}
 }

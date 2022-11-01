@@ -17,6 +17,7 @@ interface IERC721 is IERC165 {
 	error NotOwner(address provided, address expected);
 	error InvalidAddress(address invalid);
 	error TransferRejected();
+	error NonceOverflow();
 
 	/// @notice Get the number of tokens owned by an address.
 	/// @param owner The address to look for.

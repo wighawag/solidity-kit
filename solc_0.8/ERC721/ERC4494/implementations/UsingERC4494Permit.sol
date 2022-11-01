@@ -34,11 +34,11 @@ abstract contract UsingERC4494Permit is
 
 	/// @inheritdoc IERC4494
 	function nonces(uint256 id) public view virtual returns (uint256 nonce) {
-		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(id);
+		(address owner, uint256 currentNonce) = _ownerAndNonceOf(id);
 		if (owner == address(0)) {
 			revert IERC721.NonExistentToken(id);
 		}
-		return blockNumber;
+		return currentNonce;
 	}
 
 	/// @inheritdoc IERC4494Alternative
@@ -57,17 +57,14 @@ abstract contract UsingERC4494Permit is
 			revert DeadlineOver(block.timestamp, deadline);
 		}
 
-		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(tokenId);
+		(address owner, uint256 nonce) = _ownerAndNonceOf(tokenId);
 		if (owner == address(0)) {
 			revert IERC721.NonExistentToken(tokenId);
 		}
 
-		// We use blockNumber as nonce as we already store it per tokens. It can thus act as an increasing transfer counter.
-		// while technically multiple transfer could happen in the same block, the signed message would be using a previous block.
-		// And the transfer would use then a more recent blockNumber, invalidating that message when transfer is executed.
-		_requireValidPermit(owner, spender, tokenId, deadline, blockNumber, sig);
+		_requireValidPermit(owner, spender, tokenId, deadline, nonce, sig);
 
-		_approveFor(owner, blockNumber, spender, tokenId);
+		_approveFor(owner, nonce, spender, tokenId);
 	}
 
 	/// @inheritdoc IERC4494PermitForAll
