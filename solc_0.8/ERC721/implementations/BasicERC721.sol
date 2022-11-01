@@ -73,7 +73,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 	/// @inheritdoc IERC721
 	function balanceOf(address owner) public view virtual override returns (uint256 balance) {
 		if (owner == address(0)) {
-			revert InvalidOwner(owner);
+			revert InvalidAddress(owner);
 		}
 		balance = _balances[owner];
 	}
