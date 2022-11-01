@@ -28,26 +28,34 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 		virtual
 		override
 		returns (
-			bytes1,
-			string memory,
-			string memory,
-			uint256,
-			address,
-			bytes32,
-			uint256[] memory
+			bytes1 fields,
+			string memory name,
+			string memory version,
+			uint256 chainId,
+			address verifyingContract,
+			bytes32 salt,
+			uint256[] memory extensions
 		)
 	{
-		uint256 chainId;
+		fields = 0x0D;
+		name = _name();
+		version = "";
 		assembly {
 			chainId := chainid()
 		}
-		// 0x0D == 01101 (name, , chainId, verifyingContract)
-		return (0x0D, name(), "", chainId, address(this), bytes32(0), new uint256[](0));
+		verifyingContract = address(this);
+		salt = 0;
+		extensions = new uint256[](0);
 	}
 
 	// ------------------------------------------------------------------------------------------------------------------
 	// INTERNALS
 	// ------------------------------------------------------------------------------------------------------------------
+
+	// need to ensure we can use return value "name" in `eip712Domain`
+	function _name() internal view returns (string memory) {
+		return name();
+	}
 
 	function _currentDomainSeparator() internal view returns (bytes32) {
 		uint256 chainId;
