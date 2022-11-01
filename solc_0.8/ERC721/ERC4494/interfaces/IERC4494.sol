@@ -4,12 +4,13 @@ pragma solidity ^0.8.0;
 import "../../../ERC165/interfaces/IERC165.sol";
 
 interface IERC4494 is IERC165 {
+	/// @notice EIP-712 Domain separator hash
 	function DOMAIN_SEPARATOR() external view returns (bytes32);
 
 	/// @notice Allows to retrieve current nonce for token
 	/// @param tokenId token id
-	/// @return current token nonce
-	function nonces(uint256 tokenId) external view returns (uint256);
+	/// @return nonce token nonce
+	function nonces(uint256 tokenId) external view returns (uint256 nonce);
 
 	/// @notice function to be called by anyone to approve `spender` using a Permit signature
 	/// @dev Anyone can call this to approve `spender`, even a third-party
@@ -25,7 +26,31 @@ interface IERC4494 is IERC165 {
 	) external;
 }
 
+interface IERC4494PermitForAll {
+	/// @notice EIP-712 Domain separator hash
+	function DOMAIN_SEPARATOR() external view returns (bytes32);
+
+	/// @notice Allows to retrieve current nonce for the account
+	/// @param account account to query
+	/// @return nonce account's nonce
+	function nonces(address account) external view returns (uint256 nonce);
+
+	/// @notice function to be called by anyone to approve `spender` using a Permit signature
+	/// @dev Anyone can call this to approve `spender`, even a third-party
+	/// @param signer the one giving permission
+	/// @param spender the actor to approve
+	/// @param deadline the deadline for the permit to be used
+	/// @param signature permit
+	function permitForAll(
+		address signer,
+		address spender,
+		uint256 deadline,
+		bytes memory signature
+	) external;
+}
+
 interface IERC4494Alternative is IERC165 {
+	/// @notice EIP-712 Domain separator hash
 	function DOMAIN_SEPARATOR() external view returns (bytes32);
 
 	/// @notice Allows to retrieve current nonce for token

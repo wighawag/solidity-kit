@@ -2,39 +2,30 @@
 pragma solidity ^0.8.0;
 
 import "../../implementations/ImplementingERC20Internal.sol";
-import "../interfaces/IERC2612Standalone.sol";
+import "../interfaces/IERC2612.sol";
 import "../../../ERC712/implementations/UsingERC712.sol";
-import "./ImplementingExternalDomainSeparator.sol";
+import "../../../ERC712/implementations/ImplementingExternalDomainSeparator.sol";
 
-error InvalidAddress(address addr);
-error InvalidSignature();
-error DeadlineOver(uint256 currentTime, uint256 deadline);
-
-abstract contract UsingPermit is
-	ImplementingERC20Internal,
-	ImplementingExternalDomainSeparator,
-	IERC2612Standalone,
-	UsingERC712
-{
+abstract contract UsingPermit is ImplementingERC20Internal, ImplementingExternalDomainSeparator, UsingERC712, IERC2612 {
 	bytes32 internal constant PERMIT_TYPEHASH =
 		keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
 	mapping(address => uint256) internal _nonces;
 
-	/// @inheritdoc IERC2612Standalone
+	/// @inheritdoc IERC2612
 	function nonces(address owner) external view returns (uint256) {
 		return _nonces[owner];
 	}
 
-	/// @inheritdoc IERC2612Standalone
+	/// @inheritdoc IERC2612
 	function DOMAIN_SEPARATOR()
 		public
 		view
 		virtual
-		override(IERC2612Standalone, ImplementingExternalDomainSeparator)
+		override(IERC2612, ImplementingExternalDomainSeparator)
 		returns (bytes32);
 
-	/// @inheritdoc IERC2612Standalone
+	/// @inheritdoc IERC2612
 	function permit(
 		address owner,
 		address spender,

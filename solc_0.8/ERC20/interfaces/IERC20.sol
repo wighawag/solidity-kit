@@ -6,6 +6,12 @@ interface IERC20 {
 
 	event Approval(address indexed owner, address indexed spender, uint256 value);
 
+	error InvalidMsgValue(uint256 provided, uint256 expected);
+	error InvalidTotalAmount(uint256 provided, uint256 expected);
+	error InvalidAddress(address addr);
+	error NotAuthorizedAllowance(uint256 currentAllowance, uint256 expected);
+	error NotEnoughTokens(uint256 currentBalance, uint256 expected);
+
 	/// @notice Returns the total token supply.
 	function totalSupply() external view returns (uint256);
 

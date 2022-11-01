@@ -3,11 +3,12 @@ pragma solidity ^0.8.0;
 
 import "../interfaces/IERC721Receiver.sol";
 import "../interfaces/IERC721.sol";
+import "../interfaces/IERC721WithBlocknumber.sol";
 import "./ImplementingERC721Internal.sol";
 
 import "../../openzeppelin/contracts/utils/Address.sol";
 
-abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
+abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingERC721Internal {
 	using Openzeppelin_Address for address;
 
 	bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
@@ -19,32 +20,27 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 	mapping(address => mapping(address => bool)) internal _operatorsForAll;
 	mapping(uint256 => address) internal _operators;
 
-	/// @notice Approve an operator to transfer a specific token on the senders behalf.
-	/// @param operator The address receiving the approval.
-	/// @param id The id of the token.
-	function approve(address operator, uint256 id) external override {
-		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(id);
+	/// @inheritdoc IERC721
+	function approve(address operator, uint256 tokenId) external override {
+		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(tokenId);
 		if (owner == address(0)) {
-			revert NonExistentToken(id);
+			revert NonExistentToken(tokenId);
 		}
 		if (msg.sender != owner && !isApprovedForAll(owner, msg.sender)) {
 			revert NotAuthorized();
 		}
-		_approveFor(owner, blockNumber, operator, id);
+		_approveFor(owner, blockNumber, operator, tokenId);
 	}
 
-	/// @notice Transfer a token between 2 addresses.
-	/// @param from The sender of the token.
-	/// @param to The recipient of the token.
-	/// @param id The id of the token.
+	/// @inheritdoc IERC721
 	function transferFrom(
 		address from,
 		address to,
-		uint256 id
+		uint256 tokenId
 	) external override {
-		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(id);
+		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(tokenId);
 		if (owner == address(0)) {
-			revert NonExistentToken(id);
+			revert NonExistentToken(tokenId);
 		}
 		if (from != owner) {
 			revert NotOwner(from, owner);
@@ -53,35 +49,28 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 			revert InvalidAddress(to);
 		}
 		if (msg.sender != from) {
-			if (!(operatorEnabled && _operators[id] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
+			if (!(operatorEnabled && _operators[tokenId] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
 				revert NotAuthorized();
 			}
 		}
-		_transferFrom(from, to, id, blockNumber != 0);
+		_transferFrom(from, to, tokenId, blockNumber != 0);
 	}
 
-	/// @notice Transfer a token between 2 addresses letting the receiver know of the transfer.
-	/// @param from The send of the token.
-	/// @param to The recipient of the token.
-	/// @param id The id of the token.
+	/// @inheritdoc IERC721
 	function safeTransferFrom(
 		address from,
 		address to,
-		uint256 id
+		uint256 tokenId
 	) external override {
-		safeTransferFrom(from, to, id, "");
+		safeTransferFrom(from, to, tokenId, "");
 	}
 
-	/// @notice Set the approval for an operator to manage all the tokens of the sender.
-	/// @param operator The address receiving the approval.
-	/// @param approved The determination of the approval.
+	/// @inheritdoc IERC721
 	function setApprovalForAll(address operator, bool approved) external override {
 		_setApprovalForAll(msg.sender, operator, approved);
 	}
 
-	/// @notice Get the number of tokens owned by an address.
-	/// @param owner The address to look for.
-	/// @return balance The number of tokens owned by the address.
+	/// @inheritdoc IERC721
 	function balanceOf(address owner) public view virtual override returns (uint256 balance) {
 		if (owner == address(0)) {
 			revert InvalidOwner(owner);
@@ -89,32 +78,78 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 		balance = _balances[owner];
 	}
 
-	/// @notice Get the owner of a token.
-	/// @param id The id of the token.
-	/// @return owner The address of the token owner.
-	function ownerOf(uint256 id) external view override returns (address owner) {
-		owner = _ownerOf(id);
+	/// @inheritdoc IERC721
+	function ownerOf(uint256 tokenId) external view override returns (address owner) {
+		owner = _ownerOf(tokenId);
 		if (owner == address(0)) {
-			revert NonExistentToken(id);
+			revert NonExistentToken(tokenId);
 		}
 	}
 
-	/// @notice Get the owner of a token and the blockNumber of the last transfer, useful to voting mechanism.
-	/// @param id The id of the token.
-	/// @return owner The address of the token owner.
-	/// @return blockNumber The blocknumber at which the last transfer of that id happened.
-	function ownerAndLastTransferBlockNumberOf(uint256 id) internal view returns (address owner, uint256 blockNumber) {
+	/// @inheritdoc IERC721
+	function getApproved(uint256 tokenId) external view override returns (address operator) {
+		(address owner, bool operatorEnabled) = _ownerAndOperatorEnabledOf(tokenId);
+		if (owner == address(0)) {
+			revert NonExistentToken(tokenId);
+		}
+		if (operatorEnabled) {
+			return _operators[tokenId];
+		} else {
+			return address(0);
+		}
+	}
+
+	/// @inheritdoc IERC721
+	function isApprovedForAll(address owner, address operator) public view virtual override returns (bool isOperator) {
+		return _operatorsForAll[owner][operator];
+	}
+
+	/// @inheritdoc IERC721
+	function safeTransferFrom(
+		address from,
+		address to,
+		uint256 tokenId,
+		bytes memory data
+	) public override {
+		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(tokenId);
+		if (owner == address(0)) {
+			revert NonExistentToken(tokenId);
+		}
+		if (owner != from) {
+			revert NotOwner(from, owner);
+		}
+
+		if (to == address(0) || to == address(this)) {
+			revert InvalidAddress(to);
+		}
+
+		if (msg.sender != from) {
+			if (!(operatorEnabled && _operators[tokenId] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
+				revert NotAuthorized();
+			}
+		}
+		_safeTransferFrom(from, to, tokenId, blockNumber != 0, data);
+	}
+
+	/// @inheritdoc IERC165
+	function supportsInterface(bytes4 id) public view virtual override returns (bool) {
+		/// 0x01ffc9a7 is ERC165.
+		/// 0x80ac58cd is ERC721
+		/// 0x5b5e139f is for ERC721 metadata
+		return id == 0x01ffc9a7 || id == 0x80ac58cd || id == 0x5b5e139f;
+	}
+
+	/// @inheritdoc IERC721WithBlocknumber
+	function ownerAndLastTransferBlockNumberOf(uint256 id)
+		external
+		view
+		override
+		returns (address owner, uint256 blockNumber)
+	{
 		return _ownerAndBlockNumberOf(id);
 	}
 
-	struct OwnerData {
-		address owner;
-		uint256 lastTransferBlockNumber;
-	}
-
-	/// @notice Get the list of owner of a token and the blockNumber of its last transfer, useful to voting mechanism.
-	/// @param ids The list of token ids to check.
-	/// @return ownersData The list of (owner, lastTransferBlockNumber) for each ids given as input.
+	/// @inheritdoc IERC721WithBlocknumber
 	function ownerAndLastTransferBlockNumberList(uint256[] calldata ids)
 		external
 		view
@@ -127,73 +162,6 @@ abstract contract BasicERC721 is IERC721, ImplementingERC721Internal {
 			ownersData[i].owner = address(uint160(data));
 			ownersData[i].lastTransferBlockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 		}
-	}
-
-	/// @notice Get the approved operator for a specific token.
-	/// @param id The id of the token.
-	/// @return The address of the operator.
-	function getApproved(uint256 id) external view override returns (address) {
-		(address owner, bool operatorEnabled) = _ownerAndOperatorEnabledOf(id);
-		if (owner == address(0)) {
-			revert NonExistentToken(id);
-		}
-		if (operatorEnabled) {
-			return _operators[id];
-		} else {
-			return address(0);
-		}
-	}
-
-	/// @notice Check if the sender approved the operator.
-	/// @param owner The address of the owner.
-	/// @param operator The address of the operator.
-	/// @return isOperator The status of the approval.
-	function isApprovedForAll(address owner, address operator) public view virtual override returns (bool isOperator) {
-		return _operatorsForAll[owner][operator];
-	}
-
-	/// @notice Transfer a token between 2 addresses letting the receiver knows of the transfer.
-	/// @param from The sender of the token.
-	/// @param to The recipient of the token.
-	/// @param id The id of the token.
-	/// @param data Additional data.
-	function safeTransferFrom(
-		address from,
-		address to,
-		uint256 id,
-		bytes memory data
-	) public override {
-		(address owner, uint256 blockNumber, bool operatorEnabled) = _ownerBlockNumberAndOperatorEnabledOf(id);
-		if (owner == address(0)) {
-			revert NonExistentToken(id);
-		}
-		if (owner != from) {
-			revert NotOwner(from, owner);
-		}
-
-		if (to == address(0) || to == address(this)) {
-			revert InvalidAddress(to);
-		}
-
-		if (msg.sender != from) {
-			if (!(operatorEnabled && _operators[id] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
-				revert NotAuthorized();
-			}
-		}
-		_safeTransferFrom(from, to, id, blockNumber != 0, data);
-	}
-
-	/// @notice Query if a contract implements an interface
-	/// @param id The interface identifier, as specified in ERC-165
-	/// @dev Interface identification is specified in ERC-165. This function
-	///  uses less than 30,000 gas.
-	/// @return `true` if the contract implements `interfaceID` and
-	///  `interfaceID` is not 0xffffffff, `false` otherwise
-	function supportsInterface(bytes4 id) public view virtual override returns (bool) {
-		/// 0x01ffc9a7 is ERC165.
-		/// 0x80ac58cd is ERC721
-		/// 0x5b5e139f is for ERC721 metadata
-		return id == 0x01ffc9a7 || id == 0x80ac58cd || id == 0x5b5e139f;
 	}
 
 	// ------------------------------------------------------------------------------------------------------------------

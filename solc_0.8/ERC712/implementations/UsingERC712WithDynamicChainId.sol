@@ -21,6 +21,34 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 		);
 	}
 
+	/// @inheritdoc IERC5267
+	function eip712Domain()
+		external
+		view
+		virtual
+		override
+		returns (
+			bytes1,
+			string memory,
+			string memory,
+			uint256,
+			address,
+			bytes32,
+			uint256[] memory
+		)
+	{
+		uint256 chainId;
+		assembly {
+			chainId := chainid()
+		}
+		// 0x0D == 01101 (name, , chainId, verifyingContract)
+		return (0x0D, name(), "", chainId, address(this), bytes32(0), new uint256[](0));
+	}
+
+	// ------------------------------------------------------------------------------------------------------------------
+	// INTERNALS
+	// ------------------------------------------------------------------------------------------------------------------
+
 	function _currentDomainSeparator() internal view returns (bytes32) {
 		uint256 chainId;
 		assembly {
@@ -45,29 +73,5 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 					verifyingContract
 				)
 			);
-	}
-
-	/// @inheritdoc IERC5267
-	function eip712Domain()
-		external
-		view
-		virtual
-		override
-		returns (
-			bytes1,
-			string memory,
-			string memory,
-			uint256,
-			address,
-			bytes32,
-			uint256[] memory
-		)
-	{
-		uint256 chainId;
-		assembly {
-			chainId := chainid()
-		}
-		// 0x0D == 01101 (name, , chainId, verifyingContract)
-		return (0x0D, name(), "", chainId, address(this), bytes32(0), new uint256[](0));
 	}
 }

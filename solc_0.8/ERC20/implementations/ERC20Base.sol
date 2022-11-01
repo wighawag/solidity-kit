@@ -2,53 +2,15 @@
 pragma solidity ^0.8.0;
 
 import "../interfaces/IERC20.sol";
+import "../interfaces/IERC20WithCallback.sol";
+import "../interfaces/IERC20WithDistribution.sol";
 import "./ImplementingERC20Internal.sol";
 import "../../utils/Constants.sol";
 
-error InvalidMsgValue(uint256 provided, uint256 expected);
-error InvalidTotalAmount(uint256 provided, uint256 expected);
-error InvalidAddress(address addr);
-error NotAuthorizedAllowance(uint256 currentAllowance, uint256 expected);
-error NotEnoughTokens(uint256 currentBalance, uint256 expected);
-
-interface ITransferReceiver {
-	function onTokenTransfer(
-		address,
-		uint256,
-		bytes calldata
-	) external returns (bool);
-}
-
-interface ITransferOnBehalfReceiver {
-	function onTokenTransferedOnBehalf(
-		address payer,
-		address forAddress,
-		uint256 amount,
-		bytes calldata data
-	) external returns (bool);
-}
-
-interface IApprovalReceiver {
-	function onTokenApproval(
-		address,
-		uint256,
-		bytes calldata
-	) external returns (bool);
-}
-
-abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
+abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistribution, ImplementingERC20Internal {
 	uint256 internal _totalSupply;
 	mapping(address => uint256) internal _balances;
 	mapping(address => mapping(address => uint256)) internal _allowances;
-
-	function burn(uint256 amount) external virtual {
-		address sender = msg.sender;
-		_burnFrom(sender, amount);
-	}
-
-	function _internal_totalSupply() internal view override returns (uint256) {
-		return _totalSupply;
-	}
 
 	/// @inheritdoc IERC20
 	function totalSupply() external view override returns (uint256) {
@@ -80,12 +42,14 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return true;
 	}
 
+	/// @inheritdoc IERC20WithDistribution
 	function transferAlongWithETH(address payable to, uint256 amount) external payable returns (bool) {
 		_transfer(msg.sender, to, amount);
 		to.transfer(msg.value);
 		return true;
 	}
 
+	/// @inheritdoc IERC20WithDistribution
 	function distributeAlongWithETH(address payable[] memory tos, uint256 totalAmount) external payable returns (bool) {
 		uint256 val = msg.value / tos.length;
 		if (msg.value != val * tos.length) {
@@ -102,6 +66,7 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return true;
 	}
 
+	/// @inheritdoc IERC20WithCallback
 	function transferAndCall(
 		address to,
 		uint256 amount,
@@ -111,6 +76,7 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return ITransferReceiver(to).onTokenTransfer(msg.sender, amount, data);
 	}
 
+	/// @inheritdoc IERC20WithCallback
 	function transferFromAndCall(
 		address from,
 		address to,
@@ -121,6 +87,7 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return ITransferReceiver(to).onTokenTransfer(from, amount, data);
 	}
 
+	/// @inheritdoc IERC20WithCallback
 	function transferOnBehalfAndCall(
 		address forAddress,
 		address to,
@@ -147,6 +114,7 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 		return true;
 	}
 
+	/// @inheritdoc IERC20WithCallback
 	function approveAndCall(
 		address spender,
 		uint256 amount,
@@ -154,6 +122,14 @@ abstract contract ERC20Base is IERC20, ImplementingERC20Internal {
 	) external returns (bool) {
 		_approveFor(msg.sender, spender, amount);
 		return IApprovalReceiver(spender).onTokenApproval(msg.sender, amount, data);
+	}
+
+	// ------------------------------------------------------------------------------------------------------------------
+	// INTERNALS
+	// ------------------------------------------------------------------------------------------------------------------
+
+	function _internal_totalSupply() internal view override returns (uint256) {
+		return _totalSupply;
 	}
 
 	function _approveFor(

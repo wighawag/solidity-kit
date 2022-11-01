@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "../interfaces/IERC173.sol";
+import "../interfaces/IWithdrawable.sol";
+import "../interfaces/IENSName.sol";
 import "../../ERC20/interfaces/IERC20.sol";
 
 interface ReverseRegistrar {
@@ -12,7 +14,7 @@ interface ENS {
 	function owner(bytes32 node) external view returns (address);
 }
 
-contract Owned is IERC173 {
+contract Owned is IERC173, IWithdrawable, IENSName {
 	bytes32 internal constant ADDR_REVERSE_NODE = 0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
 	ENS internal immutable _ens;
 
@@ -27,8 +29,7 @@ contract Owned is IERC173 {
 		_ens = ENS(ens);
 	}
 
-	/// @notice set the reverse-record name for this contract
-	/// @param name ENS name to set
+	/// @inheritdoc IENSName
 	function setENSName(string memory name) external {
 		if (msg.sender != owner) {
 			revert IERC173.NotAuthorized();
@@ -47,9 +48,7 @@ contract Owned is IERC173 {
 		emit OwnershipTransferred(oldOwner, newOwner);
 	}
 
-	/// @notice withdraw the total balance of a particular ERC20 token owned by this contract.
-	/// @param token ERC20 contract address to withdraw
-	/// @param to address that will receive the tokens
+	/// @inheritdoc IWithdrawable
 	function withdrawERC20(IERC20 token, address to) external {
 		if (msg.sender != owner) {
 			revert NotAuthorized();

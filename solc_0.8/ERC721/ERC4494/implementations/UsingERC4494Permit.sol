@@ -16,6 +16,7 @@ error InvalidSignature();
 
 abstract contract UsingERC4494Permit is
 	IERC4494,
+	IERC4494PermitForAll,
 	IERC4494Alternative,
 	ImplementingERC721Internal,
 	UsingERC165Internal,
@@ -29,9 +30,7 @@ abstract contract UsingERC4494Permit is
 
 	mapping(address => uint256) internal _userNonces;
 
-	/// @notice return the account nonce, used for approvalForAll permit or other account related matter
-	/// @param account the account to query
-	/// @return nonce
+	/// @inheritdoc IERC4494PermitForAll
 	function nonces(address account) external view virtual returns (uint256 nonce) {
 		return _userNonces[account];
 	}
@@ -74,6 +73,7 @@ abstract contract UsingERC4494Permit is
 		_approveFor(owner, blockNumber, spender, tokenId);
 	}
 
+	/// @inheritdoc IERC4494PermitForAll
 	function permitForAll(
 		address signer,
 		address spender,
@@ -102,10 +102,12 @@ abstract contract UsingERC4494Permit is
 		public
 		view
 		virtual
-		override(IERC4494, IERC4494Alternative, ImplementingExternalDomainSeparator)
+		override(IERC4494, IERC4494PermitForAll, IERC4494Alternative, ImplementingExternalDomainSeparator)
 		returns (bytes32);
 
-	// -------------------------------------------------------- INTERNAL --------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------------
+	// INTERNALS
+	// ------------------------------------------------------------------------------------------------------------------
 
 	function _requireValidPermit(
 		address signer,
