@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// TODO Global Errors ?
-error NotAuthorized();
+import "../../GenericErrors.sol";
 
 contract UsingGuardian {
 	event GuardianSet(address newGuardian);

@@ -6,13 +6,10 @@ import "../../../ERC165/implementations/UsingERC165Internal.sol";
 import "../interfaces/IERC4494.sol";
 import "../../../ERC712/implementations/UsingERC712.sol";
 import "../../../ERC712/implementations/ImplementingExternalDomainSeparator.sol";
+import "../../../ERC721/interfaces/IERC721.sol";
 
 import "../../..//openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "../../../openzeppelin/contracts/utils/Address.sol";
-
-error NonExistentToken(uint256 tokenID);
-error DeadlineOver(uint256 currentTime, uint256 deadline);
-error InvalidSignature();
 
 abstract contract UsingERC4494Permit is
 	IERC4494,
@@ -39,7 +36,7 @@ abstract contract UsingERC4494Permit is
 	function nonces(uint256 id) public view virtual returns (uint256 nonce) {
 		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(id);
 		if (owner == address(0)) {
-			revert NonExistentToken(id);
+			revert IERC721.NonExistentToken(id);
 		}
 		return blockNumber;
 	}
@@ -62,7 +59,7 @@ abstract contract UsingERC4494Permit is
 
 		(address owner, uint256 blockNumber) = _ownerAndBlockNumberOf(tokenId);
 		if (owner == address(0)) {
-			revert NonExistentToken(tokenId);
+			revert IERC721.NonExistentToken(tokenId);
 		}
 
 		// We use blockNumber as nonce as we already store it per tokens. It can thus act as an increasing transfer counter.

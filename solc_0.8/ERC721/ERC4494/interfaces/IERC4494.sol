@@ -4,6 +4,9 @@ pragma solidity ^0.8.0;
 import "../../../ERC165/interfaces/IERC165.sol";
 
 interface IERC4494 is IERC165 {
+	error DeadlineOver(uint256 currentTime, uint256 deadline);
+	error InvalidSignature();
+
 	/// @notice EIP-712 Domain separator hash
 	function DOMAIN_SEPARATOR() external view returns (bytes32);
 
