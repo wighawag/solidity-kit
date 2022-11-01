@@ -26,10 +26,8 @@ contract UsingGuardian {
 		}
 	}
 
-	/**
-	 * @notice set the new guardian that can freeze the other admins (except owner).
-	 * Can only be called by the current guardian.
-	 */
+	/// @notice set the new guardian that can freeze the other admins (except owner).
+	/// @param newGuardian address in charge of guardian responsibility going forward.
 	function setGuardian(address newGuardian) external {
 		address currentGuardian;
 		assembly {

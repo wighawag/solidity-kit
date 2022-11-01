@@ -32,7 +32,7 @@ contract Owned is IERC173, IWithdrawable, IENSName {
 	/// @inheritdoc IENSName
 	function setENSName(string memory name) external {
 		if (msg.sender != owner) {
-			revert IERC173.NotAuthorized();
+			revert NotAuthorized();
 		}
 		ReverseRegistrar reverseRegistrar = ReverseRegistrar(_ens.owner(ADDR_REVERSE_NODE));
 		reverseRegistrar.setName(name);

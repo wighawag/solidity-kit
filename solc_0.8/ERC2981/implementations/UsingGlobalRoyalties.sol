@@ -4,15 +4,9 @@ pragma solidity ^0.8.0;
 import "../interfaces/IERC2981.sol";
 import "../../ERC165/implementations/UsingERC165Internal.sol";
 import "../../utils/Guardian/libraries/Guarded.sol";
+import "../../utils/GenericErrors.sol";
 
-// TODO Global Errors ?
-error NotAuthorized();
-error RoyaltyTooHigh(uint256 royaltyPer20ThousandsProvided, uint256 max);
-
-contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
-	event RoyaltySet(address receiver, uint256 royaltyPer10Thousands);
-	event RoyaltyAdminSet(address newRoyaltyAdmin);
-
+contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165Internal {
 	struct Royalty {
 		address receiver;
 		uint96 per10Thousands;
@@ -20,7 +14,7 @@ contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 
 	Royalty internal _royalty;
 
-	/// @notice address allowed to set royalty parameters
+	/// @inheritdoc IERC2981Administration
 	address public royaltyAdmin;
 
 	/// @param initialRoyaltyReceiver receiver of royalties
@@ -50,9 +44,7 @@ contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 		royaltyAmount = (salePrice * uint256(_royalty.per10Thousands)) / 10000;
 	}
 
-	/// @notice set a new royalty receiver and rate, Can only be set by the `royaltyAdmin`.
-	/// @param newReceiver the address that should receive the royalty proceeds.
-	/// @param royaltyPer10Thousands the share of the salePrice (in 1/10000) given to the receiver.
+	/// @inheritdoc IERC2981Administration
 	function setRoyaltyParameters(address newReceiver, uint96 royaltyPer10Thousands) external {
 		if (msg.sender != royaltyAdmin) {
 			revert NotAuthorized();
@@ -67,10 +59,7 @@ contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 		}
 	}
 
-	/**
-	 * @notice set the new royaltyAdmin that can change the royalties
-	 * Can only be called by the current royalty admin.
-	 */
+	/// @inheritdoc IERC2981Administration
 	function setRoyaltyAdmin(address newRoyaltyAdmin) external {
 		if (msg.sender != royaltyAdmin && !Guarded.isGuardian(msg.sender, newRoyaltyAdmin)) {
 			revert NotAuthorized();
@@ -81,9 +70,7 @@ contract UsingGlobalRoyalties is IERC2981, UsingERC165Internal {
 		}
 	}
 
-	/// @notice Check if the contract supports an interface.
-	/// @param id The id of the interface.
-	/// @return Whether the interface is supported.
+	/// @inheritdoc IERC165
 	function supportsInterface(bytes4 id) public view virtual override(IERC165, UsingERC165Internal) returns (bool) {
 		return super.supportsInterface(id) || id == 0x2a55205a; /// 0x2a55205a is ERC2981 (royalty standard)
 	}

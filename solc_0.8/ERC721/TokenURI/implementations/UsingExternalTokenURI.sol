@@ -4,17 +4,11 @@ pragma solidity ^0.8.0;
 import "../interfaces/ITokenURI.sol";
 import "../../../utils/Guardian/libraries/Guarded.sol";
 
-// TODO Global Errors ?
-error NotAuthorized();
-
-contract UsingExternalTokenURI {
-	event TokenURIContractSet(ITokenURI newTokenURIContract);
-	event TokenURIAdminSet(address newTokenURIAdmin);
-
-	/// @notice the contract that actually generate the sound (and all metadata via the a data: uri via tokenURI call).
+contract UsingExternalTokenURI is IERC721WithExternalTokenURI {
+	/// @inheritdoc IERC721WithExternalTokenURI
 	ITokenURI public tokenURIContract;
 
-	/// @notice tokenURIAdmin can update the tokenURI contract, this is intended to be relinquished once the tokenURI has been heavily tested in the wild and that no modification are needed.
+	/// @inheritdoc IERC721WithExternalTokenURI
 	address public tokenURIAdmin;
 
 	/// @param initialTokenURIAdmin admin able to update the tokenURI contract.
@@ -30,8 +24,7 @@ contract UsingExternalTokenURI {
 		}
 	}
 
-	/// @notice set the new tokenURIAdmin that can change the tokenURI
-	/// Can only be called by the current tokenURI admin.
+	/// @inheritdoc IERC721WithExternalTokenURI
 	function setTokenURIAdmin(address newTokenURIAdmin) external {
 		if (msg.sender != tokenURIAdmin && !Guarded.isGuardian(msg.sender, newTokenURIAdmin)) {
 			revert NotAuthorized();
@@ -42,13 +35,12 @@ contract UsingExternalTokenURI {
 		}
 	}
 
-	/// @notice Returns the Uniform Resource Identifier (URI) for token `id`.
+	/// @inheritdoc ITokenURI
 	function tokenURI(uint256 id) external view returns (string memory) {
 		return tokenURIContract.tokenURI(id);
 	}
 
-	/// @notice set a new tokenURI contract, that generate the metadata including the wav file, Can only be set by the `tokenURIAdmin`.
-	/// @param newTokenURIContract The address of the new tokenURI contract.
+	/// @inheritdoc IERC721WithExternalTokenURI
 	function setTokenURIContract(ITokenURI newTokenURIContract) external {
 		if (msg.sender != tokenURIAdmin) {
 			revert NotAuthorized();

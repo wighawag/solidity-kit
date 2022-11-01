@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface IERC173 {
-	error NotAuthorized();
+import "../../utils/GenericErrors.sol";
 
+interface IERC173 {
 	event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
 	/// @notice Get the address of the owner

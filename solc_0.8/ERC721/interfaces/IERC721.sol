@@ -3,6 +3,10 @@ pragma solidity ^0.8.0;
 
 import "../../ERC165/interfaces/IERC165.sol";
 
+interface IERC721Supply {
+	function totalSupply() external view returns (uint256);
+}
+
 interface IERC721 is IERC165 {
 	event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
 	event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);

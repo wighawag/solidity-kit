@@ -6,10 +6,8 @@ import "./BasicERC721.sol";
 
 import "../../openzeppelin/contracts/utils/Address.sol";
 
-abstract contract ERC721OwnedByAll is BasicERC721 {
-	/// @notice Get the number of tokens owned by an address.
-	/// @param owner The address to look for.
-	/// @return balance The number of tokens owned by the address.
+abstract contract ERC721OwnedByAll is BasicERC721, IERC721Supply {
+	/// @inheritdoc IERC721
 	function balanceOf(address owner) public view override returns (uint256 balance) {
 		if (owner == address(0)) {
 			revert InvalidOwner(owner);
@@ -25,9 +23,7 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		}
 	}
 
-	/// @notice Get the list of owner of a token and the blockNumber of its last transfer, useful to voting mechanism.
-	/// @param ids The list of token ids to check.
-	/// @return ownersData The list of (owner, lastTransferBlockNumber) for each ids given as input.
+	/// @inheritdoc IERC721WithBlocknumber
 	function ownerAndLastTransferBlockNumberList(uint256[] calldata ids)
 		external
 		view
@@ -47,9 +43,7 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		}
 	}
 
-	/// @notice Count NFTs tracked by this contract
-	/// @return A count of valid NFTs tracked by this contract, where each one of
-	///  them has an assigned and queryable owner not equal to the zero address
+	/// @inheritdoc IERC721Supply
 	function totalSupply() external pure returns (uint256) {
 		return 2**160 - 1; // do not count token with id zero whose owner would otherwise be the zero address
 	}
@@ -58,7 +52,6 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 	// INTERNALS
 	// ------------------------------------------------------------------------------------------------------------------
 
-	/// @dev See ownerOf
 	function _ownerOf(uint256 id) internal view override returns (address owner) {
 		owner = address(uint160(_owners[id]));
 		if (owner == address(0) && id < 2**160) {
@@ -66,7 +59,6 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		}
 	}
 
-	/// @dev See _ownerAndOperatorEnabledOf
 	function _ownerAndOperatorEnabledOf(uint256 id)
 		internal
 		view
@@ -81,7 +73,6 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
 	}
 
-	/// @dev See _ownerAndBlockNumberOf
 	function _ownerAndBlockNumberOf(uint256 id) internal view override returns (address owner, uint256 blockNumber) {
 		uint256 data = _owners[id];
 		owner = address(uint160(data));
@@ -91,7 +82,6 @@ abstract contract ERC721OwnedByAll is BasicERC721 {
 		blockNumber = (data >> 160) & 0xFFFFFFFFFFFFFFFFFFFFFF;
 	}
 
-	/// @dev See _ownerBlockNumberAndOperatorEnabledOf
 	function _ownerBlockNumberAndOperatorEnabledOf(uint256 id)
 		internal
 		view

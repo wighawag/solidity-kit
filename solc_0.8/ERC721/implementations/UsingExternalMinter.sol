@@ -2,20 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "../../utils/Guardian/libraries/Guarded.sol";
+import "../interfaces/IERC721Mintable.sol";
 
-// TODO Global Errors ?
-error NotAuthorized();
-
-contract UsingExternalMinter {
-	event MinterAdminSet(address newMinterAdmin);
-	event MinterSet(address newMinter);
-
-	/// @notice minterAdmin can update the minter. At the time being there is 576 Bleeps but there is space for extra instrument and the upper limit is 1024.
-	/// could be given to the DAO later so instrument can be added, the sale of these new bleeps could benenfit the DAO too and add new members.
+contract UsingExternalMinter is IERC721WithExternalMinter {
+	/// @inheritdoc IERC721WithExternalMinter
 	address public minterAdmin;
 
-	/// @notice address allowed to mint, allow the sale contract to be separated from the token contract that can focus on the core logic
-	/// Once all 1024 potential bleeps (there could be less, at minimum there are 576 bleeps) are minted, no minter can mint anymore
+	/// @inheritdoc IERC721WithExternalMinter
 	address public minter;
 
 	constructor(address initialMinterAdmin) {
@@ -25,10 +18,7 @@ contract UsingExternalMinter {
 		}
 	}
 
-	/**
-	 * @notice set the new minterAdmin that can set the minter for Bleeps
-	 * Can only be called by the current minter admin.
-	 */
+	/// @inheritdoc IERC721WithExternalMinter
 	function setMinterAdmin(address newMinterAdmin) external {
 		if (msg.sender != minterAdmin && !Guarded.isGuardian(msg.sender, newMinterAdmin)) {
 			revert NotAuthorized();
@@ -39,10 +29,7 @@ contract UsingExternalMinter {
 		}
 	}
 
-	/**
-	 * @notice set the new minter that can mint
-	 * Can only be called by the minter admin.
-	 */
+	/// @inheritdoc IERC721WithExternalMinter
 	function setMinter(address newMinter) external {
 		if (msg.sender != minterAdmin) {
 			revert NotAuthorized();
