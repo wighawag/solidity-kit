@@ -71,7 +71,13 @@ contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165In
 	}
 
 	/// @inheritdoc IERC165
-	function supportsInterface(bytes4 id) public view virtual override(IERC165, UsingERC165Internal) returns (bool) {
-		return super.supportsInterface(id) || id == 0x2a55205a; /// 0x2a55205a is ERC2981 (royalty standard)
+	function supportsInterface(bytes4 interfaceID)
+		public
+		view
+		virtual
+		override(IERC165, UsingERC165Internal)
+		returns (bool)
+	{
+		return super.supportsInterface(interfaceID) || interfaceID == 0x2a55205a; /// 0x2a55205a is ERC2981 (royalty standard)
 	}
 }

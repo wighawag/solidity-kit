@@ -37,8 +37,8 @@ contract UsingExternalTokenURI is IERC721WithExternalTokenURI {
 	}
 
 	/// @inheritdoc ITokenURI
-	function tokenURI(uint256 id) external view returns (string memory) {
-		return tokenURIContract.tokenURI(id);
+	function tokenURI(uint256 tokenID) external view returns (string memory) {
+		return tokenURIContract.tokenURI(tokenID);
 	}
 
 	/// @inheritdoc IERC721WithExternalTokenURI

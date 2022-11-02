@@ -3,7 +3,8 @@ pragma solidity ^0.8.0;
 
 interface ITokenURI {
 	/// @notice Returns the Uniform Resource Identifier (URI) for token `id`.
-	function tokenURI(uint256 id) external view returns (string memory);
+	/// @param tokenID the token to query
+	function tokenURI(uint256 tokenID) external view returns (string memory);
 }
 
 interface IERC721WithExternalTokenURI is ITokenURI {

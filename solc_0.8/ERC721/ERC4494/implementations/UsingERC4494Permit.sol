@@ -33,10 +33,10 @@ abstract contract UsingERC4494Permit is
 	}
 
 	/// @inheritdoc IERC4494
-	function nonces(uint256 id) public view virtual returns (uint256 nonce) {
-		(address owner, uint256 currentNonce) = _ownerAndNonceOf(id);
+	function nonces(uint256 tokenID) public view virtual returns (uint256 nonce) {
+		(address owner, uint256 currentNonce) = _ownerAndNonceOf(tokenID);
 		if (owner == address(0)) {
-			revert IERC721.NonExistentToken(id);
+			revert IERC721.NonExistentToken(tokenID);
 		}
 		return currentNonce;
 	}
@@ -84,11 +84,17 @@ abstract contract UsingERC4494Permit is
 	}
 
 	/// @inheritdoc IERC165
-	function supportsInterface(bytes4 id) public view virtual override(IERC165, UsingERC165Internal) returns (bool) {
+	function supportsInterface(bytes4 interfaceID)
+		public
+		view
+		virtual
+		override(IERC165, UsingERC165Internal)
+		returns (bool)
+	{
 		return
-			super.supportsInterface(id) ||
-			id == type(IERC4494).interfaceId ||
-			id == type(IERC4494Alternative).interfaceId;
+			super.supportsInterface(interfaceID) ||
+			interfaceID == type(IERC4494).interfaceId ||
+			interfaceID == type(IERC4494Alternative).interfaceId;
 	}
 
 	/// @inheritdoc ImplementingExternalDomainSeparator
@@ -106,7 +112,7 @@ abstract contract UsingERC4494Permit is
 	function _requireValidPermit(
 		address signer,
 		address spender,
-		uint256 id,
+		uint256 tokenID,
 		uint256 deadline,
 		uint256 nonce,
 		bytes memory sig
@@ -115,7 +121,7 @@ abstract contract UsingERC4494Permit is
 			abi.encodePacked(
 				"\x19\x01",
 				DOMAIN_SEPARATOR(),
-				keccak256(abi.encode(PERMIT_TYPEHASH, spender, id, nonce, deadline))
+				keccak256(abi.encode(PERMIT_TYPEHASH, spender, tokenID, nonce, deadline))
 			)
 		);
 		if (!Openzeppelin_SignatureChecker.isValidSignatureNow(signer, digest, sig)) {
