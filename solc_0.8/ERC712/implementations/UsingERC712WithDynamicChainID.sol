@@ -75,7 +75,7 @@ abstract contract UsingERC712WithDynamicChainID is UsingERC712, Named {
 		return
 			keccak256(
 				abi.encode(
-					keccak256("EIP712Domain(string name,uint256 chainID,address verifyingContract)"),
+					keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)"),
 					keccak256(bytes(name())),
 					chainID,
 					verifyingContract
