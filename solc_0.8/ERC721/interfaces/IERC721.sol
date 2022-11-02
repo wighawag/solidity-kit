@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "../../ERC165/interfaces/IERC165.sol";
+import "../../utils/GenericErrors.sol";
 
 interface IERC721Supply {
 	function totalSupply() external view returns (uint256);
@@ -13,7 +14,6 @@ interface IERC721 is IERC165 {
 	event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
 	error NonExistentToken(uint256 tokenID);
-	error NotAuthorized();
 	error NotOwner(address provided, address expected);
 	error InvalidAddress(address invalid);
 	error TransferRejected();
