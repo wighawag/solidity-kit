@@ -100,7 +100,7 @@ interface IERC721 is IERC165 {
 	/// @return operator The address of the operator.
 	function getApproved(uint256 tokenID) external view returns (address operator);
 
-	/// @notice Check if the sender approved the operator.
+	/// @notice Check if the sender approved the operator to transfer any of its tokens.
 	/// @param owner The address of the owner.
 	/// @param operator The address of the operator.
 	/// @return isOperator The status of the approval.
