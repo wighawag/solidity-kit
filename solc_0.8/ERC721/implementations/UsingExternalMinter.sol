@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../../utils/Guardian/libraries/Guarded.sol";
 import "../interfaces/IERC721Mintable.sol";
+import "../../utils/GenericErrors.sol";
 
 contract UsingExternalMinter is IERC721WithExternalMinter {
 	/// @inheritdoc IERC721WithExternalMinter

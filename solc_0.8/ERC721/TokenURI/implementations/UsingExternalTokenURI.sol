@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../interfaces/ITokenURI.sol";
 import "../../../utils/Guardian/libraries/Guarded.sol";
+import "../../../utils/GenericErrors.sol";
 
 contract UsingExternalTokenURI is IERC721WithExternalTokenURI {
 	/// @inheritdoc IERC721WithExternalTokenURI

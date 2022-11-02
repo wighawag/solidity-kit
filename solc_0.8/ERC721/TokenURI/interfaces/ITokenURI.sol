@@ -7,10 +7,12 @@ interface ITokenURI {
 }
 
 interface IERC721WithExternalTokenURI is ITokenURI {
+	/// @notice Triggered when the external tokenURI contract is updated/set.
+	/// @param newTokenURIContract the new tokenURI contract
 	event TokenURIContractSet(ITokenURI newTokenURIContract);
+	/// @notice Triggered when the account in charge of tokenURI updates is updated/set.
+	/// @param newTokenURIAdmin the new tokenURI admin
 	event TokenURIAdminSet(address newTokenURIAdmin);
-
-	error NotAuthorized();
 
 	/// @notice the contract that actually generate the sound (and all metadata via the a data: uri via tokenURI call).
 	function tokenURIContract() external returns (ITokenURI);

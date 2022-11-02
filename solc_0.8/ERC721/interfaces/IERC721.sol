@@ -9,14 +9,38 @@ interface IERC721Supply {
 }
 
 interface IERC721 is IERC165 {
+	/// @notice Triggered when a token is transferred
+	/// @param from the account the token is sent from
+	/// @param to the account the token is sent to
+	/// @param tokenId id of the token being sent
 	event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+
+	/// @notice Triggered when a token is approved to be sent by another account
+	///  Note tat the approval get reset when a Transfer event for that same token is emitted.
+	/// @param owner current owner of the token
+	/// @param approved account who can know transfer on the owner's behalf
+	/// @param tokenId id of the token being approved
 	event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+
+	/// @notice Triggered when an account approve or disaprove another to transfer on its behalf
+	/// @param owner the account granting rights over all of its token
+	/// @param operator account who can know transfer on the owner's behalf
+	/// @param approved whether it is approved or not
 	event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
-	error NonExistentToken(uint256 tokenID);
-	error NotOwner(address provided, address expected);
-	error InvalidAddress(address invalid);
+	/// @notice The token does not exist
+	/// @param tokenId id of the expected token
+	error NonExistentToken(uint256 tokenId);
+	/// @notice The address from which the token is sent is not the current owner
+	/// @param provided the address expected to be the current owner
+	/// @param currentOwner the current owner
+	error NotOwner(address provided, address currentOwner);
+	/// @notice An invalid address is specified (for example: zero address)
+	/// @param addr invalid address
+	error InvalidAddress(address addr);
+	/// @notice The Transfer was rejected by the destination
 	error TransferRejected();
+	/// @notice The Nonce overflowed, make a transfer to self to allow new nonces.
 	error NonceOverflow();
 
 	/// @notice Get the number of tokens owned by an address.

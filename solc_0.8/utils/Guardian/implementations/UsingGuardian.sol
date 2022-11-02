@@ -4,6 +4,8 @@ pragma solidity ^0.8.0;
 import "../../GenericErrors.sol";
 
 contract UsingGuardian {
+	/// @notice Triggered when the guardian account is updated/set.
+	/// @param newGuardian the new guardian
 	event GuardianSet(address newGuardian);
 
 	// bytes32 GUARDIAN_SLOT = bytes32(uint256(keccak256('guardian')) - 1); // 0x8fbcb4375b910093bcf636b6b2f26b26eda2a29ef5a8ee7de44b5743c3bf9a27

@@ -12,10 +12,12 @@ interface IContractURI {
 }
 
 interface IERC721WithExternalContractURI is IContractURI {
+	/// @notice Triggered when the external contractURI contract is updated/set.
+	/// @param newContractURIAddress the contractURI contract
 	event ContractURIAddressSet(IExternalContractURI newContractURIAddress);
+	/// @notice Triggered when the account in charge of contractURI updates is updated/set.
+	/// @param newContractURIAdmin the new contractURI admin
 	event ContractURIAdminSet(address newContractURIAdmin);
-
-	error NotAuthorized();
 
 	/// @notice the contract that return the contract metadata
 	function contractURIAddress() external returns (IExternalContractURI);

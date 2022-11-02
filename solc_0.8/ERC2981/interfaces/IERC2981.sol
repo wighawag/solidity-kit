@@ -13,9 +13,17 @@ interface IERC2981 is IERC165 {
 }
 
 interface IERC2981Administration {
+	/// @notice Triggered when Royalty receiver and/or rate is updated/set
+	/// @param receiver the account receiving the royalty
+	/// @param royaltyPer10Thousands the royalty rate (per 10,000)
 	event RoyaltySet(address receiver, uint256 royaltyPer10Thousands);
+	/// @notice Triggered when the account in charge of royalty settings is updated/set.
+	/// @param newRoyaltyAdmin the new royalty admin
 	event RoyaltyAdminSet(address newRoyaltyAdmin);
 
+	/// @notice The Royality rate exceed the maximum allowed
+	/// @param royaltyPer10ThousandsProvided royalty rate provided (per 10,000)
+	/// @param max maximum rate allowed (per 10,000)
 	error RoyaltyTooHigh(uint256 royaltyPer10ThousandsProvided, uint256 max);
 
 	/// @notice address allowed to set royalty parameters

@@ -4,7 +4,11 @@ pragma solidity ^0.8.0;
 import "../../../ERC165/interfaces/IERC165.sol";
 
 interface IERC4494 is IERC165 {
+	/// @notice The permit has expired
+	/// @param currentTime time at which the error happen
+	/// @param deadline the deadline
 	error DeadlineOver(uint256 currentTime, uint256 deadline);
+	/// @notice The signature do not match the expected signer
 	error InvalidSignature();
 
 	/// @notice EIP-712 Domain separator hash
