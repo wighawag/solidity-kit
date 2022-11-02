@@ -42,8 +42,8 @@ abstract contract UsingERC4494Permit is
 	}
 
 	/// @inheritdoc IERC4494Alternative
-	function tokenNonces(uint256 tokenId) external view returns (uint256 nonce) {
-		return nonces(tokenId);
+	function tokenNonces(uint256 tokenID) external view returns (uint256 nonce) {
+		return nonces(tokenID);
 	}
 
 	/// @inheritdoc IERC4494

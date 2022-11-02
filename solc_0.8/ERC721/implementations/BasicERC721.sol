@@ -21,26 +21,26 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 	mapping(uint256 => address) internal _operators;
 
 	/// @inheritdoc IERC721
-	function approve(address operator, uint256 tokenId) external override {
-		(address owner, uint256 nonce) = _ownerAndNonceOf(tokenId);
+	function approve(address operator, uint256 tokenID) external override {
+		(address owner, uint256 nonce) = _ownerAndNonceOf(tokenID);
 		if (owner == address(0)) {
-			revert NonExistentToken(tokenId);
+			revert NonExistentToken(tokenID);
 		}
 		if (msg.sender != owner && !isApprovedForAll(owner, msg.sender)) {
 			revert NotAuthorized();
 		}
-		_approveFor(owner, nonce, operator, tokenId);
+		_approveFor(owner, nonce, operator, tokenID);
 	}
 
 	/// @inheritdoc IERC721
 	function transferFrom(
 		address from,
 		address to,
-		uint256 tokenId
+		uint256 tokenID
 	) external override {
-		(address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenId);
+		(address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenID);
 		if (owner == address(0)) {
-			revert NonExistentToken(tokenId);
+			revert NonExistentToken(tokenID);
 		}
 		if (from != owner) {
 			revert NotOwner(from, owner);
@@ -49,20 +49,20 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 			revert InvalidAddress(to);
 		}
 		if (msg.sender != from) {
-			if (!(operatorEnabled && _operators[tokenId] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
+			if (!(operatorEnabled && _operators[tokenID] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
 				revert NotAuthorized();
 			}
 		}
-		_transferFrom(from, to, tokenId, (nonce >> 24) != 0);
+		_transferFrom(from, to, tokenID, (nonce >> 24) != 0);
 	}
 
 	/// @inheritdoc IERC721
 	function safeTransferFrom(
 		address from,
 		address to,
-		uint256 tokenId
+		uint256 tokenID
 	) external override {
-		safeTransferFrom(from, to, tokenId, "");
+		safeTransferFrom(from, to, tokenID, "");
 	}
 
 	/// @inheritdoc IERC721
@@ -79,21 +79,21 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 	}
 
 	/// @inheritdoc IERC721
-	function ownerOf(uint256 tokenId) external view override returns (address owner) {
-		owner = _ownerOf(tokenId);
+	function ownerOf(uint256 tokenID) external view override returns (address owner) {
+		owner = _ownerOf(tokenID);
 		if (owner == address(0)) {
-			revert NonExistentToken(tokenId);
+			revert NonExistentToken(tokenID);
 		}
 	}
 
 	/// @inheritdoc IERC721
-	function getApproved(uint256 tokenId) external view override returns (address operator) {
-		(address owner, bool operatorEnabled) = _ownerAndOperatorEnabledOf(tokenId);
+	function getApproved(uint256 tokenID) external view override returns (address operator) {
+		(address owner, bool operatorEnabled) = _ownerAndOperatorEnabledOf(tokenID);
 		if (owner == address(0)) {
-			revert NonExistentToken(tokenId);
+			revert NonExistentToken(tokenID);
 		}
 		if (operatorEnabled) {
-			return _operators[tokenId];
+			return _operators[tokenID];
 		} else {
 			return address(0);
 		}
@@ -108,12 +108,12 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 	function safeTransferFrom(
 		address from,
 		address to,
-		uint256 tokenId,
+		uint256 tokenID,
 		bytes memory data
 	) public override {
-		(address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenId);
+		(address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenID);
 		if (owner == address(0)) {
-			revert NonExistentToken(tokenId);
+			revert NonExistentToken(tokenID);
 		}
 		if (owner != from) {
 			revert NotOwner(from, owner);
@@ -124,11 +124,11 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 		}
 
 		if (msg.sender != from) {
-			if (!(operatorEnabled && _operators[tokenId] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
+			if (!(operatorEnabled && _operators[tokenID] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
 				revert NotAuthorized();
 			}
 		}
-		_safeTransferFrom(from, to, tokenId, (nonce >> 24) != 0, data);
+		_safeTransferFrom(from, to, tokenID, (nonce >> 24) != 0, data);
 	}
 
 	/// @inheritdoc IERC165

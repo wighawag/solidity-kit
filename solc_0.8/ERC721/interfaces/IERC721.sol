@@ -12,15 +12,15 @@ interface IERC721 is IERC165 {
 	/// @notice Triggered when a token is transferred
 	/// @param from the account the token is sent from
 	/// @param to the account the token is sent to
-	/// @param tokenId id of the token being sent
-	event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+	/// @param tokenID id of the token being sent
+	event Transfer(address indexed from, address indexed to, uint256 indexed tokenID);
 
 	/// @notice Triggered when a token is approved to be sent by another account
 	///  Note tat the approval get reset when a Transfer event for that same token is emitted.
 	/// @param owner current owner of the token
 	/// @param approved account who can know transfer on the owner's behalf
-	/// @param tokenId id of the token being approved
-	event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+	/// @param tokenID id of the token being approved
+	event Approval(address indexed owner, address indexed approved, uint256 indexed tokenID);
 
 	/// @notice Triggered when an account approve or disaprove another to transfer on its behalf
 	/// @param owner the account granting rights over all of its token
@@ -29,8 +29,8 @@ interface IERC721 is IERC165 {
 	event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
 	/// @notice The token does not exist
-	/// @param tokenId id of the expected token
-	error NonExistentToken(uint256 tokenId);
+	/// @param tokenID id of the expected token
+	error NonExistentToken(uint256 tokenID);
 	/// @notice The address from which the token is sent is not the current owner
 	/// @param provided the address expected to be the current owner
 	/// @param currentOwner the current owner
@@ -49,46 +49,46 @@ interface IERC721 is IERC165 {
 	function balanceOf(address owner) external view returns (uint256 balance);
 
 	/// @notice Get the owner of a token.
-	/// @param tokenId The id of the token.
+	/// @param tokenID The id of the token.
 	/// @return owner The address of the token owner.
-	function ownerOf(uint256 tokenId) external view returns (address owner);
+	function ownerOf(uint256 tokenID) external view returns (address owner);
 
 	/// @notice Transfer a token between 2 addresses letting the receiver knows of the transfer.
 	/// @param from The sender of the token.
 	/// @param to The recipient of the token.
-	/// @param tokenId The id of the token.
+	/// @param tokenID The id of the token.
 	/// @param data Additional data.
 	function safeTransferFrom(
 		address from,
 		address to,
-		uint256 tokenId,
+		uint256 tokenID,
 		bytes calldata data
 	) external;
 
 	/// @notice Transfer a token between 2 addresses letting the receiver know of the transfer.
 	/// @param from The send of the token.
 	/// @param to The recipient of the token.
-	/// @param tokenId The id of the token.
+	/// @param tokenID The id of the token.
 	function safeTransferFrom(
 		address from,
 		address to,
-		uint256 tokenId
+		uint256 tokenID
 	) external;
 
 	/// @notice Transfer a token between 2 addresses.
 	/// @param from The sender of the token.
 	/// @param to The recipient of the token.
-	/// @param tokenId The id of the token.
+	/// @param tokenID The id of the token.
 	function transferFrom(
 		address from,
 		address to,
-		uint256 tokenId
+		uint256 tokenID
 	) external;
 
 	/// @notice Approve an operator to transfer a specific token on the senders behalf.
 	/// @param operator The address receiving the approval.
-	/// @param tokenId The id of the token.
-	function approve(address operator, uint256 tokenId) external;
+	/// @param tokenID The id of the token.
+	function approve(address operator, uint256 tokenID) external;
 
 	/// @notice Set the approval for an operator to manage all the tokens of the sender.
 	/// @param operator The address receiving the approval.
@@ -96,9 +96,9 @@ interface IERC721 is IERC165 {
 	function setApprovalForAll(address operator, bool approved) external;
 
 	/// @notice Get the approved operator for a specific token.
-	/// @param tokenId The id of the token.
+	/// @param tokenID The id of the token.
 	/// @return operator The address of the operator.
-	function getApproved(uint256 tokenId) external view returns (address operator);
+	function getApproved(uint256 tokenID) external view returns (address operator);
 
 	/// @notice Check if the sender approved the operator.
 	/// @param owner The address of the owner.

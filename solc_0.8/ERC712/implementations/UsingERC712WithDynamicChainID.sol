@@ -4,19 +4,19 @@ pragma solidity ^0.8.0;
 import "./UsingERC712.sol";
 import "./Named.sol";
 
-abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
-	uint256 private immutable _deploymentChainId;
+abstract contract UsingERC712WithDynamicChainID is UsingERC712, Named {
+	uint256 private immutable _deploymentChainID;
 	bytes32 private immutable _deploymentDomainSeparator;
 
 	constructor(address verifyingContract) {
-		uint256 chainId;
+		uint256 chainID;
 		assembly {
-			chainId := chainid()
+			chainID := chainid()
 		}
 
-		_deploymentChainId = chainId;
+		_deploymentChainID = chainID;
 		_deploymentDomainSeparator = _calculateDomainSeparator(
-			chainId,
+			chainID,
 			verifyingContract == address(0) ? address(this) : verifyingContract
 		);
 	}
@@ -31,7 +31,7 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 			bytes1 fields,
 			string memory name,
 			string memory version,
-			uint256 chainId,
+			uint256 chainID,
 			address verifyingContract,
 			bytes32 salt,
 			uint256[] memory extensions
@@ -41,7 +41,7 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 		name = _name();
 		version = "";
 		assembly {
-			chainId := chainid()
+			chainID := chainid()
 		}
 		verifyingContract = address(this);
 		salt = 0;
@@ -58,26 +58,26 @@ abstract contract UsingERC712WithDynamicChainId is UsingERC712, Named {
 	}
 
 	function _currentDomainSeparator() internal view returns (bytes32) {
-		uint256 chainId;
+		uint256 chainID;
 		assembly {
-			chainId := chainid()
+			chainID := chainid()
 		}
 
-		// in case a fork happen, to support the chain that had to change its chainId, we compute the domain operator
+		// in case a fork happen, to support the chain that had to change its chainID, we compute the domain operator
 		return
-			chainId == _deploymentChainId
+			chainID == _deploymentChainID
 				? _deploymentDomainSeparator
-				: _calculateDomainSeparator(chainId, address(this));
+				: _calculateDomainSeparator(chainID, address(this));
 	}
 
 	/// @dev Calculate the Domain Separator used to compute ERC712 hash
-	function _calculateDomainSeparator(uint256 chainId, address verifyingContract) private view returns (bytes32) {
+	function _calculateDomainSeparator(uint256 chainID, address verifyingContract) private view returns (bytes32) {
 		return
 			keccak256(
 				abi.encode(
-					keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)"),
+					keccak256("EIP712Domain(string name,uint256 chainID,address verifyingContract)"),
 					keccak256(bytes(name())),
-					chainId,
+					chainID,
 					verifyingContract
 				)
 			);

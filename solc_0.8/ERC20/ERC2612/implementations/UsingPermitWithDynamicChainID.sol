@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "./UsingPermit.sol";
-import "../../../ERC712/implementations/UsingERC712WithDynamicChainId.sol";
+import "../../../ERC712/implementations/UsingERC712WithDynamicChainID.sol";
 
-abstract contract UsingPermitWithDynamicChainId is UsingPermit, UsingERC712WithDynamicChainId {
+abstract contract UsingPermitWithDynamicChainID is UsingPermit, UsingERC712WithDynamicChainID {
 	/// @inheritdoc IERC2612
 	function DOMAIN_SEPARATOR() public view virtual override returns (bytes32) {
 		return _currentDomainSeparator();
