@@ -49,7 +49,7 @@ abstract contract UsingERC4494Permit is
 	/// @inheritdoc IERC4494
 	function permit(
 		address spender,
-		uint256 tokenId,
+		uint256 tokenID,
 		uint256 deadline,
 		bytes memory sig
 	) external override(IERC4494, IERC4494Alternative) {
@@ -57,14 +57,14 @@ abstract contract UsingERC4494Permit is
 			revert DeadlineOver(block.timestamp, deadline);
 		}
 
-		(address owner, uint256 nonce) = _ownerAndNonceOf(tokenId);
+		(address owner, uint256 nonce) = _ownerAndNonceOf(tokenID);
 		if (owner == address(0)) {
-			revert IERC721.NonExistentToken(tokenId);
+			revert IERC721.NonExistentToken(tokenID);
 		}
 
-		_requireValidPermit(owner, spender, tokenId, deadline, nonce, sig);
+		_requireValidPermit(owner, spender, tokenID, deadline, nonce, sig);
 
-		_approveFor(owner, nonce, spender, tokenId);
+		_approveFor(owner, nonce, spender, tokenID);
 	}
 
 	/// @inheritdoc IERC4494PermitForAll
