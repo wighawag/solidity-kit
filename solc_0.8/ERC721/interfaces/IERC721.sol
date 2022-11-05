@@ -5,6 +5,7 @@ import "../../ERC165/interfaces/IERC165.sol";
 import "../../utils/GenericErrors.sol";
 
 interface IERC721Supply {
+	/// @notice return the total number of token in existence
 	function totalSupply() external view returns (uint256);
 }
 
