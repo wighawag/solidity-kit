@@ -2,10 +2,9 @@
 
 pragma solidity ^0.8.0;
 
+import "../../interfaces/IERC20Errors.sol";
+
 interface IERC2612 {
-	/// @notice An invalid address is specified (for example: zero address)
-	/// @param addr invalid address
-	error InvalidAddress(address addr);
 	/// @notice The signature do not match the expected signer
 	error InvalidSignature();
 	/// @notice The permit has expired
