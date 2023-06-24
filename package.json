@@ -1,6 +1,9 @@
 {
   "name": "solidity-kit",
   "version": "0.3.1",
+	"publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "solidity",
     "ethereum",
