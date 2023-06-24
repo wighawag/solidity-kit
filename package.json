@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "keywords": [
     "solidity",
     "ethereum",
@@ -12,6 +12,7 @@
   "license": "MIT",
   "description": "A set of base solidity contracts and utilities.",
   "devDependencies": {
+    "@changesets/cli": "^2.26.1",
     "@openzeppelin/contracts": "^4.7.3",
     "@types/node": "^18.8.3",
     "fs-extra": "^10.1.0",
