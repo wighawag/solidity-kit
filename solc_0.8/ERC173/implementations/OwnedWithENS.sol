@@ -23,7 +23,7 @@ contract OwnedWithENS is Owned, IENSName {
 
 	/// @inheritdoc IENSName
 	function setENSName(string memory name) external {
-		if (msg.sender != _owner) {
+		if (msg.sender != _getOwner()) {
 			revert NotAuthorized();
 		}
 		ReverseRegistrar reverseRegistrar = ReverseRegistrar(_ens.owner(ADDR_REVERSE_NODE));
