@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../ERC173/internal/UsingInternalOwner.sol";
+import "../../../ERC173/internal/UsingInternalOwner.sol";
+import "../interfaces/ITime.sol";
 
-abstract contract UsingControlledTime is UsingInternalOwner {
-	event TimeIncreased(uint256 newTime, uint256 delta);
-
-	function timestamp() public view returns (uint256) {
+abstract contract UsingControlledTime is UsingInternalOwner, ITime, ITimeSetter {
+	function timestamp() public view override returns (uint256) {
 		return block.timestamp + _delta();
 	}
 
-	function increaseTime(uint256 delta) external {
+	function increaseTime(uint256 delta) external override {
 		require(msg.sender == _getOwner(), "NOT_AUTHORIZED");
 		uint256 newDelta = _delta() + delta;
 		assembly {
