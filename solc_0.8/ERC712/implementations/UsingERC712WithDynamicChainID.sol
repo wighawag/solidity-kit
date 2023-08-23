@@ -7,7 +7,9 @@ import "./Named.sol";
 abstract contract UsingERC712WithDynamicChainID is UsingERC712, Named {
 	uint256 private immutable _deploymentChainID;
 	bytes32 private immutable _deploymentDomainSeparator;
+	address private immutable _verifyingContract;
 
+	/// @dev we let you specifying the verifying contract so that if you use a proxy, the implementation can use it.
 	constructor(address verifyingContract) {
 		uint256 chainID;
 		assembly {
@@ -15,10 +17,8 @@ abstract contract UsingERC712WithDynamicChainID is UsingERC712, Named {
 		}
 
 		_deploymentChainID = chainID;
-		_deploymentDomainSeparator = _calculateDomainSeparator(
-			chainID,
-			verifyingContract == address(0) ? address(this) : verifyingContract
-		);
+		_verifyingContract = verifyingContract == address(0) ? address(this) : verifyingContract;
+		_deploymentDomainSeparator = _calculateDomainSeparator(chainID, _verifyingContract);
 	}
 
 	/// @inheritdoc IERC5267
@@ -43,7 +43,7 @@ abstract contract UsingERC712WithDynamicChainID is UsingERC712, Named {
 		assembly {
 			chainID := chainid()
 		}
-		verifyingContract = address(this);
+		verifyingContract = _verifyingContract;
 		salt = 0;
 		extensions = new uint256[](0);
 	}
@@ -67,7 +67,7 @@ abstract contract UsingERC712WithDynamicChainID is UsingERC712, Named {
 		return
 			chainID == _deploymentChainID
 				? _deploymentDomainSeparator
-				: _calculateDomainSeparator(chainID, address(this));
+				: _calculateDomainSeparator(chainID, _verifyingContract);
 	}
 
 	/// @dev Calculate the Domain Separator used to compute ERC712 hash
