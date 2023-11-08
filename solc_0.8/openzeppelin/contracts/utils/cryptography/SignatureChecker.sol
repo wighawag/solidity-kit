@@ -15,28 +15,28 @@ import "../../interfaces/IERC1271.sol";
  * _Available since v4.1._
  */
 library Openzeppelin_SignatureChecker {
-	/**
-	 * @dev Checks if a signature is valid for a given signer and data hash. If the signer is a smart contract, the
-	 * signature is validated against that smart contract using ERC1271, otherwise it's validated using `ECDSA.recover`.
-	 *
-	 * NOTE: Unlike ECDSA signatures, contract signatures are revocable, and the outcome of this function can thus
-	 * change through time. It could return true at block N and false at block N+1 (or the opposite).
-	 */
-	function isValidSignatureNow(
-		address signer,
-		bytes32 hash,
-		bytes memory signature
-	) internal view returns (bool) {
-		(address recovered, Openzeppelin_ECDSA.RecoverError error) = Openzeppelin_ECDSA.tryRecover(hash, signature);
-		if (error == Openzeppelin_ECDSA.RecoverError.NoError && recovered == signer) {
-			return true;
-		}
+    /**
+     * @dev Checks if a signature is valid for a given signer and data hash. If the signer is a smart contract, the
+     * signature is validated against that smart contract using ERC1271, otherwise it's validated using `ECDSA.recover`.
+     *
+     * NOTE: Unlike ECDSA signatures, contract signatures are revocable, and the outcome of this function can thus
+     * change through time. It could return true at block N and false at block N+1 (or the opposite).
+     */
+    function isValidSignatureNow(
+        address signer,
+        bytes32 hash,
+        bytes memory signature
+    ) internal view returns (bool) {
+        (address recovered, Openzeppelin_ECDSA.RecoverError error) = Openzeppelin_ECDSA.tryRecover(hash, signature);
+        if (error == Openzeppelin_ECDSA.RecoverError.NoError && recovered == signer) {
+            return true;
+        }
 
-		(bool success, bytes memory result) = signer.staticcall(
-			abi.encodeWithSelector(Openzeppelin_IERC1271.isValidSignature.selector, hash, signature)
-		);
-		return (success &&
-			result.length == 32 &&
-			abi.decode(result, (bytes32)) == bytes32(Openzeppelin_IERC1271.isValidSignature.selector));
-	}
+        (bool success, bytes memory result) = signer.staticcall(
+            abi.encodeWithSelector(Openzeppelin_IERC1271.isValidSignature.selector, hash, signature)
+        );
+        return (success &&
+            result.length == 32 &&
+            abi.decode(result, (bytes32)) == bytes32(Openzeppelin_IERC1271.isValidSignature.selector));
+    }
 }

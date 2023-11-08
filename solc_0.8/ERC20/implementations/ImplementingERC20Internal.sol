@@ -2,15 +2,15 @@
 pragma solidity ^0.8.0;
 
 abstract contract ImplementingERC20Internal {
-	function _approveFor(
-		address owner,
-		address target,
-		uint256 amount
-	) internal virtual;
+    function _approveFor(
+        address owner,
+        address target,
+        uint256 amount
+    ) internal virtual;
 
-	function _mint(address to, uint256 amount) internal virtual;
+    function _mint(address to, uint256 amount) internal virtual;
 
-	function _burnFrom(address from, uint256 amount) internal virtual;
+    function _burnFrom(address from, uint256 amount) internal virtual;
 
-	function _internal_totalSupply() internal view virtual returns (uint256);
+    function _internal_totalSupply() internal view virtual returns (uint256);
 }

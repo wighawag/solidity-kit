@@ -1,6 +1,18 @@
-cache/
-artifacts/
-node_modules/
+node_modules
+.vscode/*
+!*.default
+*.local
 
-.vscode/
-!.vscode/*.default
+# rocketh
+generated
+deployments/localhost
+deployments/lan
+_metadata
+
+# hardhat
+/coverage
+/coverage.json
+/coverage-data.json
+cache
+artifacts
+docs
