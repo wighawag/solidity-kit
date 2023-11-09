@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.3.11
+
+### Patch Changes
+
+- cjs
+
 ## 0.3.10
 
 ### Patch Changes

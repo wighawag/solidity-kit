@@ -33,8 +33,8 @@ devDependencies:
     specifier: ^2.17.3
     version: 2.19.0(typescript@5.2.2)
   hardhat-rocketh:
-    specifier: ^0.6.29
-    version: 0.6.29(rocketh@0.6.20)
+    specifier: ^0.6.30
+    version: 0.6.30(rocketh@0.6.20)
   ldenv:
     specifier: ^0.3.7
     version: 0.3.7
@@ -3472,8 +3472,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /hardhat-rocketh@0.6.29(rocketh@0.6.20):
-    resolution: {integrity: sha512-GHKwgEa2f9qj7zM1umYSCR1w4PulRzJkWy3Duiwj+Fv+2LmvWIewz5/DWkLekl5/QtX3z1fF0ZSFumo/Z7r7Qw==}
+  /hardhat-rocketh@0.6.30(rocketh@0.6.20):
+    resolution: {integrity: sha512-7VyeUxJTGUywMgy3j/o/dXzFw1620det8gh4aBAqsCDW5fbBHLcKK8aPWjizwq+xuYtTmNIw+6LfqeU/OKwWWw==}
     peerDependencies:
       rocketh: 0.6.20
     dependencies:
@@ -4029,13 +4029,13 @@ packages:
   /jsonfile@2.4.0:
     resolution: {integrity: sha512-PKllAqbgLgxHaj8TElYymKCAgrASebJrWpTnEkOaTowt23VKXXN0sUeriJ+eh7y6ufb/CC5ap11pz71/cM0hUw==}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonfile@6.1.0:
@@ -4068,7 +4068,7 @@ packages:
   /klaw@1.3.1:
     resolution: {integrity: sha512-TED5xi9gGQjGpNnvRWknrwAB1eL5GciPfVFOt3Vk1OJCVDQbzuSfrF3hkUQKlsgKrG1F+0t5W0m+Fje1jIt8rw==}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /kleur@4.1.5:

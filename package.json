@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "publishConfig": {
     "access": "public"
   },
@@ -21,11 +21,11 @@
     "./generated/artifacts": {
       "require": {
         "types": "./generated/artifacts.d.ts",
-        "default": "./generated/artifacts.js"
+        "default": "./generated/artifacts.cjs"
       },
       "import": {
         "types": "./generated/artifacts.d.ts",
-        "default": "./generated/artifacts.ts"
+        "default": "./generated/artifacts.js"
       }
     },
     "./deploy/debug/time/001_deploy_time": {
@@ -47,7 +47,7 @@
     "ethereum-contracts-test-suite": "^0.2.1",
     "ethereum-indexer-browser": "^0.6.9",
     "hardhat": "^2.17.3",
-    "hardhat-rocketh": "^0.6.29",
+    "hardhat-rocketh": "^0.6.30",
     "ldenv": "^0.3.7",
     "pkgroll": "^2.0.1",
     "prettier": "^2.7.1",
