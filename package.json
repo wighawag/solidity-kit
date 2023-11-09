@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "publishConfig": {
     "access": "public"
   },
@@ -11,17 +11,20 @@
   ],
   "files": [
     "solc_0.8",
-    "dist/deploy"
+    "dist/deploy",
+    "generated"
   ],
   "license": "MIT",
   "description": "A set of base solidity contracts and utilities.",
   "type": "module",
   "exports": {
     "require": {
-      "default": "./dist/deploy/debug/time/001_deploy_time.cjs"
+      "default": "./dist/deploy/debug/time/001_deploy_time.cjs",
+      "artifacts": "./generated/artifacts.js"
     },
     "import": {
-      "default": "./dist/deploy/debug/time/001_deploy_time.mjs"
+      "default": "./dist/deploy/debug/time/001_deploy_time.mjs",
+      "artifacts": "./generated/artifacts.ts"
     }
   },
   "devDependencies": {

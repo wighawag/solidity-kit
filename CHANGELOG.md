@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.3.7
+
+### Patch Changes
+
+- export artifacts
+
 ## 0.3.6
 
 ### Patch Changes
