@@ -38,11 +38,11 @@ const config = {
 				hardhat: {
 					initialBaseFeePerGas: 0,
 					mining: {
-						auto: process.env['BLOCK_TIME'] ? true : false,
+						auto: true,
 						interval: process.env['BLOCK_TIME'] ? parseInt(process.env['BLOCK_TIME']) * 1000 : undefined,
 					},
 				},
-			}),
+			})
 		),
 	paths: {
 		sources: 'solc_0.8',
