@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.3.8
+
+### Patch Changes
+
+- fix exports
+
 ## 0.3.7
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "publishConfig": {
     "access": "public"
   },
@@ -18,13 +18,21 @@
   "description": "A set of base solidity contracts and utilities.",
   "type": "module",
   "exports": {
-    "require": {
-      "default": "./dist/deploy/debug/time/001_deploy_time.cjs",
-      "artifacts": "./generated/artifacts.js"
+    "./artifacts": {
+      "require": {
+        "default": "./generated/artifacts.js"
+      },
+      "import": {
+        "default": "./generated/artifacts.ts"
+      }
     },
-    "import": {
-      "default": "./dist/deploy/debug/time/001_deploy_time.mjs",
-      "artifacts": "./generated/artifacts.ts"
+    "./deploy/debug/time/001_deploy_time": {
+      "require": {
+        "default": "./dist/deploy/debug/time/001_deploy_time.cjs"
+      },
+      "import": {
+        "default": "./dist/deploy/debug/time/001_deploy_time.mjs"
+      }
     }
   },
   "devDependencies": {
