@@ -54,6 +54,10 @@ const config = {
 	mocha: {
 		require: 'named-logs-console',
 	},
+	generateArtifacts: {
+		ts: ['./generated/artifacts.ts'],
+		js: ['./generated/artifacts.js'],
+	},
 };
 
 module.exports = config;

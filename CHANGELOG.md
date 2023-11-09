@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.3.9
+
+### Patch Changes
+
+- publish artifacts types
+
 ## 0.3.8
 
 ### Patch Changes
