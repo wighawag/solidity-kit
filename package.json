@@ -10,10 +10,20 @@
     "library"
   ],
   "files": [
-    "solc_0.8"
+    "solc_0.8",
+    "dist/deploy"
   ],
   "license": "MIT",
   "description": "A set of base solidity contracts and utilities.",
+  "type": "module",
+   "exports": {
+       "require": {
+          "default": "./dist/deploy/debug/time/001_deploy_time.cjs"
+       },
+       "import": {
+          "default": "./dist/deploy/debug/time/001_deploy_time.mjs"
+       }
+   },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
@@ -26,6 +36,7 @@
     "hardhat": "^2.17.3",
     "hardhat-rocketh": "^0.6.25",
     "ldenv": "^0.3.7",
+    "pkgroll": "^2.0.1",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.24",
     "rocketh": "^0.6.17",
@@ -48,6 +59,7 @@
   },
   "scripts": {
     "prepare": "set-defaults && pnpm compile",
+    "build": "pkgroll --src deploy --dist dist/deploy",
     "local_node": "rm -Rf deployments/localhost && hardhat node",
     "compile": "hardhat compile",
     "compile:watch": "as-soon -w src pnpm compile",

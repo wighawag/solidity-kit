@@ -16,3 +16,5 @@ _metadata
 cache
 artifacts
 docs
+
+dist/

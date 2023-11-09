@@ -5,13 +5,12 @@ import {context} from '../../_context';
 export default execute(
 	context,
 	async ({deploy, accounts, artifacts}) => {
-		const {deployer} = accounts;
 		await deploy(
 			'Time',
 			{
-				account: deployer,
+				account: accounts['solidity-kit:deployer'] || accounts['deployer'],
 				artifact: artifacts.Time,
-				args: [accounts.deployer],
+				args: [accounts['solidity-kit:time-owner']],
 			},
 			{deterministic: true}
 		);

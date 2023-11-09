@@ -3,7 +3,10 @@ import 'rocketh-signer';
 
 export const context = {
 	accounts: {
-		deployer: {
+		'solidity-kit:deployer': {
+			default: 0,
+		},
+		'solidity-kit:time-owner': {
 			default: 0,
 		},
 	},
