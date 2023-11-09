@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "publishConfig": {
     "access": "public"
   },
@@ -16,14 +16,14 @@
   "license": "MIT",
   "description": "A set of base solidity contracts and utilities.",
   "type": "module",
-   "exports": {
-       "require": {
-          "default": "./dist/deploy/debug/time/001_deploy_time.cjs"
-       },
-       "import": {
-          "default": "./dist/deploy/debug/time/001_deploy_time.mjs"
-       }
-   },
+  "exports": {
+    "require": {
+      "default": "./dist/deploy/debug/time/001_deploy_time.cjs"
+    },
+    "import": {
+      "default": "./dist/deploy/debug/time/001_deploy_time.mjs"
+    }
+  },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
