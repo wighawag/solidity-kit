@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.3.10
+
+### Patch Changes
+
+- new dts
+
 ## 0.3.9
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "publishConfig": {
     "access": "public"
   },
@@ -18,7 +18,7 @@
   "description": "A set of base solidity contracts and utilities.",
   "type": "module",
   "exports": {
-    "./artifacts": {
+    "./generated/artifacts": {
       "require": {
         "types": "./generated/artifacts.d.ts",
         "default": "./generated/artifacts.js"
@@ -47,18 +47,18 @@
     "ethereum-contracts-test-suite": "^0.2.1",
     "ethereum-indexer-browser": "^0.6.9",
     "hardhat": "^2.17.3",
-    "hardhat-rocketh": "^0.6.25",
+    "hardhat-rocketh": "^0.6.29",
     "ldenv": "^0.3.7",
     "pkgroll": "^2.0.1",
     "prettier": "^2.7.1",
     "prettier-plugin-solidity": "^1.0.0-beta.24",
-    "rocketh": "^0.6.17",
-    "rocketh-deploy": "^0.6.17",
-    "rocketh-deploy-proxy": "^0.6.23",
-    "rocketh-deploy-router": "^0.6.26",
-    "rocketh-doc": "^0.6.17",
-    "rocketh-export": "^0.6.19",
-    "rocketh-signer": "^0.6.17",
+    "rocketh": "^0.6.20",
+    "rocketh-deploy": "^0.6.22",
+    "rocketh-deploy-proxy": "^0.6.26",
+    "rocketh-deploy-router": "^0.6.29",
+    "rocketh-doc": "^0.6.20",
+    "rocketh-export": "^0.6.22",
+    "rocketh-signer": "^0.6.20",
     "rocketh-verifier": "^0.6.21",
     "rollup-plugin-node-builtins": "^2.1.2",
     "set-defaults": "^0.0.1",
