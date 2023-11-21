@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "publishConfig": {
     "access": "public"
   },
@@ -11,40 +11,11 @@
   ],
   "files": [
     "solc_0.8",
-    "dist/deploy",
     "generated"
   ],
   "license": "MIT",
   "description": "A set of base solidity contracts and utilities.",
   "type": "module",
-  "exports": {
-    "./solc_0.8": {
-      "require": {
-        "default": "./solc_0.8"
-      },
-      "import": {
-        "default": "./solc_0.8"
-      }
-    },
-    "./generated/artifacts": {
-      "require": {
-        "types": "./generated/artifacts.d.ts",
-        "default": "./generated/artifacts.cjs"
-      },
-      "import": {
-        "types": "./generated/artifacts.d.ts",
-        "default": "./generated/artifacts.js"
-      }
-    },
-    "./deploy/debug/time/001_deploy_time": {
-      "require": {
-        "default": "./dist/deploy/debug/time/001_deploy_time.cjs"
-      },
-      "import": {
-        "default": "./dist/deploy/debug/time/001_deploy_time.mjs"
-      }
-    }
-  },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
