@@ -1,6 +1,6 @@
 {
   "name": "solidity-kit",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "publishConfig": {
     "access": "public"
   },
@@ -18,6 +18,14 @@
   "description": "A set of base solidity contracts and utilities.",
   "type": "module",
   "exports": {
+    "./solc_0.8": {
+      "require": {
+        "default": "./solc_0.8"
+      },
+      "import": {
+        "default": "./solc_0.8"
+      }
+    },
     "./generated/artifacts": {
       "require": {
         "types": "./generated/artifacts.d.ts",

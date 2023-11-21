@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.3.12
+
+### Patch Changes
+
+- add export for solidity source
+
 ## 0.3.11
 
 ### Patch Changes
