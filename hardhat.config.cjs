@@ -45,7 +45,7 @@ const config = {
 			})
 		),
 	paths: {
-		sources: 'solc_0.8',
+		sources: 'solc_0_8',
 	},
 	docgen: {
 		templates: 'docs_templates',
