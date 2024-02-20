@@ -53,4 +53,15 @@ contract Owned is IERC173, IWithdrawable, UsingInternalOwner {
         }
         emit OwnershipTransferred(previousOwner, newOwner);
     }
+
+    // ------------------------------------------------------------------------------------------------------------------
+    // MODIFIERS
+    // ------------------------------------------------------------------------------------------------------------------
+
+    modifier onlyOwner() {
+        if (msg.sender != _getOwner()) {
+            revert NotAuthorized();
+        }
+        _;
+    }
 }
