@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.3.14
+
+### Patch Changes
+
+- add more error + modifier to Owned
+
 ## 0.3.13
 
 ### Patch Changes
