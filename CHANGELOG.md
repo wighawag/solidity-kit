@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.4.0
+
+### Minor Changes
+
+- use solc_0_8 to avoid issue with solidity-coverage
+
 ## 0.3.14
 
 ### Patch Changes
