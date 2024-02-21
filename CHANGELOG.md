@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.4.1
+
+### Patch Changes
+
+- lates deps + virtual ERC20Base
+
 ## 0.4.0
 
 ### Minor Changes

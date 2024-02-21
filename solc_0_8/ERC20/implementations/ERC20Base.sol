@@ -13,17 +13,17 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
     mapping(address => mapping(address => uint256)) internal _allowances;
 
     /// @inheritdoc IERC20
-    function totalSupply() external view override returns (uint256) {
+    function totalSupply() external view virtual override returns (uint256) {
         return _internal_totalSupply();
     }
 
     /// @inheritdoc IERC20
-    function balanceOf(address owner) external view override returns (uint256) {
+    function balanceOf(address owner) external view virtual override returns (uint256) {
         return _balances[owner];
     }
 
     /// @inheritdoc IERC20
-    function allowance(address owner, address spender) external view override returns (uint256) {
+    function allowance(address owner, address spender) external view virtual override returns (uint256) {
         if (owner == address(this)) {
             // see transferFrom: address(this) allows anyone
             return type(uint256).max;
@@ -37,20 +37,23 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
     }
 
     /// @inheritdoc IERC20
-    function transfer(address to, uint256 amount) external override returns (bool) {
+    function transfer(address to, uint256 amount) external virtual override returns (bool) {
         _transfer(msg.sender, to, amount);
         return true;
     }
 
     /// @inheritdoc IERC20WithDistribution
-    function transferAlongWithETH(address payable to, uint256 amount) external payable returns (bool) {
+    function transferAlongWithETH(address payable to, uint256 amount) external payable virtual returns (bool) {
         _transfer(msg.sender, to, amount);
         to.transfer(msg.value);
         return true;
     }
 
     /// @inheritdoc IERC20WithDistribution
-    function distributeAlongWithETH(address payable[] memory tos, uint256 totalAmount) external payable returns (bool) {
+    function distributeAlongWithETH(
+        address payable[] memory tos,
+        uint256 totalAmount
+    ) external payable virtual returns (bool) {
         uint256 val = msg.value / tos.length;
         if (msg.value != val * tos.length) {
             revert InvalidMsgValue(msg.value, val * tos.length);
@@ -67,11 +70,7 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
     }
 
     /// @inheritdoc IERC20WithCallback
-    function transferAndCall(
-        address to,
-        uint256 amount,
-        bytes calldata data
-    ) external returns (bool) {
+    function transferAndCall(address to, uint256 amount, bytes calldata data) external virtual returns (bool) {
         _transfer(msg.sender, to, amount);
         return ITransferReceiver(to).onTokenTransfer(msg.sender, amount, data);
     }
@@ -82,7 +81,7 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
         address to,
         uint256 amount,
         bytes calldata data
-    ) external returns (bool) {
+    ) external virtual returns (bool) {
         _transferFrom(from, to, amount);
         return ITransferReceiver(to).onTokenTransfer(from, amount, data);
     }
@@ -93,33 +92,25 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
         address to,
         uint256 amount,
         bytes calldata data
-    ) external returns (bool) {
+    ) external virtual returns (bool) {
         _transfer(msg.sender, to, amount);
         return ITransferOnBehalfReceiver(to).onTokenTransferedOnBehalf(msg.sender, forAddress, amount, data);
     }
 
     /// @inheritdoc IERC20
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external override returns (bool) {
+    function transferFrom(address from, address to, uint256 amount) external virtual override returns (bool) {
         _transferFrom(from, to, amount);
         return true;
     }
 
     /// @inheritdoc IERC20
-    function approve(address spender, uint256 amount) external override returns (bool) {
+    function approve(address spender, uint256 amount) external virtual override returns (bool) {
         _approveFor(msg.sender, spender, amount);
         return true;
     }
 
     /// @inheritdoc IERC20WithCallback
-    function approveAndCall(
-        address spender,
-        uint256 amount,
-        bytes calldata data
-    ) external returns (bool) {
+    function approveAndCall(address spender, uint256 amount, bytes calldata data) external virtual returns (bool) {
         _approveFor(msg.sender, spender, amount);
         return IApprovalReceiver(spender).onTokenApproval(msg.sender, amount, data);
     }
@@ -132,11 +123,7 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
         return _totalSupply;
     }
 
-    function _approveFor(
-        address owner,
-        address spender,
-        uint256 amount
-    ) internal override {
+    function _approveFor(address owner, address spender, uint256 amount) internal virtual override {
         if (owner == address(0) || spender == address(0)) {
             revert InvalidAddress(address(0));
         }
@@ -144,11 +131,7 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
         emit Approval(owner, spender, amount);
     }
 
-    function _transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) internal {
+    function _transferFrom(address from, address to, uint256 amount) internal virtual {
         // anybody can transfer from this
         // this allow mintAndApprovedCall without gas overhead
         if (msg.sender != from && from != address(this)) {
@@ -164,11 +147,7 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
         _transfer(from, to, amount);
     }
 
-    function _transfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal {
+    function _transfer(address from, address to, uint256 amount) internal virtual {
         if (to == address(0) || to == address(this)) {
             revert InvalidAddress(to);
         }
@@ -181,7 +160,7 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
         emit Transfer(from, to, amount);
     }
 
-    function _transferAllIfAny(address from, address to) internal {
+    function _transferAllIfAny(address from, address to) internal virtual {
         uint256 balanceLeft = _balances[from];
         if (balanceLeft > 0) {
             _balances[from] = 0;
@@ -190,13 +169,13 @@ abstract contract ERC20Base is IERC20, IERC20WithCallback, IERC20WithDistributio
         }
     }
 
-    function _mint(address to, uint256 amount) internal override {
+    function _mint(address to, uint256 amount) internal virtual override {
         _totalSupply += amount;
         _balances[to] += amount;
         emit Transfer(address(0), to, amount);
     }
 
-    function _burnFrom(address from, uint256 amount) internal override {
+    function _burnFrom(address from, uint256 amount) internal virtual override {
         uint256 currentBalance = _balances[from];
         if (currentBalance < amount) {
             revert NotEnoughTokens(currentBalance, amount);
