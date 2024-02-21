@@ -1,13 +1,11 @@
 {
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"[svelte]": {
-		"editor.defaultFormatter": "svelte.svelte-vscode"
-	},
 	"[solidity]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
 	},
 	"prettier.documentSelectors": ["**/*.sol"],
 	"solidity.formatter": "prettier",
 	"npm.exclude": "**/lib/**",
+	"prettier.configPath": "./.prettierrc", // https://github.com/prettier-solidity/prettier-plugin-solidity/issues/964#issuecomment-1933710197
 }

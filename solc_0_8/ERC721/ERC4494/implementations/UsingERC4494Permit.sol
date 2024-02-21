@@ -4,9 +4,11 @@ pragma solidity ^0.8.0;
 import "../../implementations/ImplementingERC721Internal.sol";
 import "../../../ERC165/implementations/UsingERC165Internal.sol";
 import "../interfaces/IERC4494.sol";
+import "../interfaces/UsingERC4494Errors.sol";
 import "../../../ERC712/implementations/UsingERC712.sol";
 import "../../../ERC712/implementations/ImplementingExternalDomainSeparator.sol";
 import "../../../ERC721/interfaces/IERC721.sol";
+import "../../../ERC721/interfaces/UsingERC721Errors.sol";
 
 import "../../..//openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "../../../openzeppelin/contracts/utils/Address.sol";
@@ -18,7 +20,8 @@ abstract contract UsingERC4494Permit is
     ImplementingERC721Internal,
     UsingERC165Internal,
     ImplementingExternalDomainSeparator,
-    UsingERC712
+    UsingERC712,
+    UsingERC4494Errors
 {
     bytes32 internal constant PERMIT_TYPEHASH =
         keccak256("Permit(address spender,uint256 tokenId,uint256 nonce,uint256 deadline)");
@@ -36,7 +39,7 @@ abstract contract UsingERC4494Permit is
     function nonces(uint256 tokenID) public view virtual returns (uint256 nonce) {
         (address owner, uint256 currentNonce) = _ownerAndNonceOf(tokenID);
         if (owner == address(0)) {
-            revert IERC721.NonExistentToken(tokenID);
+            revert UsingERC721Errors.NonExistentToken(tokenID);
         }
         return currentNonce;
     }
@@ -59,7 +62,7 @@ abstract contract UsingERC4494Permit is
 
         (address owner, uint256 nonce) = _ownerAndNonceOf(tokenID);
         if (owner == address(0)) {
-            revert IERC721.NonExistentToken(tokenID);
+            revert UsingERC721Errors.NonExistentToken(tokenID);
         }
 
         _requireValidPermit(owner, spender, tokenID, deadline, nonce, sig);
@@ -68,12 +71,7 @@ abstract contract UsingERC4494Permit is
     }
 
     /// @inheritdoc IERC4494PermitForAll
-    function permitForAll(
-        address owner,
-        address spender,
-        uint256 deadline,
-        bytes memory sig
-    ) external {
+    function permitForAll(address owner, address spender, uint256 deadline, bytes memory sig) external {
         if (block.timestamp > deadline) {
             revert DeadlineOver(block.timestamp, deadline);
         }
@@ -84,13 +82,9 @@ abstract contract UsingERC4494Permit is
     }
 
     /// @inheritdoc IERC165
-    function supportsInterface(bytes4 interfaceID)
-        public
-        view
-        virtual
-        override(IERC165, UsingERC165Internal)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceID
+    ) public view virtual override(IERC165, UsingERC165Internal) returns (bool) {
         return
             super.supportsInterface(interfaceID) ||
             interfaceID == type(IERC4494).interfaceId ||

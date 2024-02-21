@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../GenericErrors.sol";
+import "../../UsingGenericErrors.sol";
 
 contract UsingGuardian {
     /// @notice Triggered when the guardian account is updated/set.
@@ -35,7 +35,7 @@ contract UsingGuardian {
             currentGuardian := sload(0x8fbcb4375b910093bcf636b6b2f26b26eda2a29ef5a8ee7de44b5743c3bf9a27)
         }
         if (msg.sender != currentGuardian) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (currentGuardian != newGuardian) {
             assembly {

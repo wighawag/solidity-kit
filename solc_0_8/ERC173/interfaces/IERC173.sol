@@ -1,14 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../utils/GenericErrors.sol";
+import "./UsingERC173Events.sol";
 
-interface IERC173 {
-    /// @notice This emits when ownership of the contract changes.
-    /// @param previousOwner the previous owner
-    /// @param newOwner the new owner
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
+interface IERC173 is UsingERC173Events {
     /// @notice Get the address of the owner
     /// @return The address of the owner.
     function owner() external view returns (address);

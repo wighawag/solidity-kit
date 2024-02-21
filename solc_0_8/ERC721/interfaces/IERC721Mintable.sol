@@ -1,16 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./UsingERC721ExternalMinterEvents.sol";
+
 interface IERC721Mintable {}
 
-interface IERC721WithExternalMinter {
-    /// @notice Triggered when the account in charge of minter updates is updated/set.
-    /// @param newMinterAdmin the new minter admin
-    event MinterAdminSet(address newMinterAdmin);
-    /// @notice Triggered when the minter is updated/set.
-    /// @param newMinter the new minter
-    event MinterSet(address newMinter);
-
+interface IERC721WithExternalMinter is UsingERC721ExternalMinterEvents {
     /// @notice minterAdmin can update the minter.
     function minterAdmin() external returns (address);
 

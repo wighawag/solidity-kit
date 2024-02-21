@@ -1,22 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IERC20Errors.sol";
+import "./UsingERC20Events.sol";
 
-interface IERC20 {
-    /// @notice trigger when tokens are transferred, including zero value transfers.
-    /// @param from the account the tokens are sent from
-    /// @param to the account the tokens are sent to
-    /// @param value number of tokens sent
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    /// @notice trigger on approval amount being set.
-    ///   Note that Transfer events need to be considered to compute the current allowance.
-    /// @param owner the account approving the `spender`
-    /// @param spender the account allowed to spend
-    /// @param value the amount granted
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-
+interface IERC20 is UsingERC20Events {
     /// @notice Returns the total token supply.
     function totalSupply() external view returns (uint256);
 
@@ -42,9 +29,5 @@ interface IERC20 {
     function approve(address spender, uint256 amount) external returns (bool);
 
     /// @notice Transfers `amount` tokens from address `from` to address `to`.
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
 }

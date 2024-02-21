@@ -2,16 +2,9 @@
 
 pragma solidity ^0.8.0;
 
-import "../../interfaces/IERC20Errors.sol";
+import "./UsingERC2612Errors.sol";
 
 interface IERC2612 {
-    /// @notice The signature do not match the expected signer
-    error InvalidSignature();
-    /// @notice The permit has expired
-    /// @param currentTime time at which the error happen
-    /// @param deadline the deadline
-    error DeadlineOver(uint256 currentTime, uint256 deadline);
-
     /// @notice allow `spender` to spend `value` amount of token on behalf of `owner`
     /// @param owner owner of the tokens
     /// @param spender address allowed to spend on behalf of the owner.

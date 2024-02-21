@@ -2,11 +2,18 @@
 pragma solidity ^0.8.0;
 
 import "../interfaces/IERC2981.sol";
+import "../interfaces/IERC2981Administration.sol";
+import "../interfaces/UsingERC2981AdministrationErrors.sol";
 import "../../ERC165/implementations/UsingERC165Internal.sol";
 import "../../utils/Guardian/libraries/Guarded.sol";
-import "../../utils/GenericErrors.sol";
+import "../../utils/UsingGenericErrors.sol";
 
-contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165Internal {
+contract UsingGlobalRoyalties is
+    IERC2981,
+    IERC2981Administration,
+    UsingERC165Internal,
+    UsingERC2981AdministrationErrors
+{
     struct Royalty {
         address receiver;
         uint96 per10Thousands;
@@ -20,11 +27,7 @@ contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165In
     /// @param initialRoyaltyReceiver receiver of royalties
     /// @param imitialRoyaltyPer10Thousands amount of royalty in 10,000 basis point
     /// @param initialRoyaltyAdmin admin able to update the royalty receiver and rates
-    constructor(
-        address initialRoyaltyReceiver,
-        uint96 imitialRoyaltyPer10Thousands,
-        address initialRoyaltyAdmin
-    ) {
+    constructor(address initialRoyaltyReceiver, uint96 imitialRoyaltyPer10Thousands, address initialRoyaltyAdmin) {
         if (initialRoyaltyAdmin != address(0)) {
             royaltyAdmin = initialRoyaltyAdmin;
             emit RoyaltyAdminSet(initialRoyaltyAdmin);
@@ -37,7 +40,7 @@ contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165In
 
     /// @inheritdoc IERC2981
     function royaltyInfo(
-        uint256, /*id*/
+        uint256 /*id*/,
         uint256 salePrice
     ) external view returns (address receiver, uint256 royaltyAmount) {
         receiver = _royalty.receiver;
@@ -47,7 +50,7 @@ contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165In
     /// @inheritdoc IERC2981Administration
     function setRoyaltyParameters(address newReceiver, uint96 royaltyPer10Thousands) external {
         if (msg.sender != royaltyAdmin) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (royaltyPer10Thousands > 50) {
             revert RoyaltyTooHigh(royaltyPer10Thousands, 50);
@@ -62,7 +65,7 @@ contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165In
     /// @inheritdoc IERC2981Administration
     function setRoyaltyAdmin(address newRoyaltyAdmin) external {
         if (msg.sender != royaltyAdmin && !Guarded.isGuardian(msg.sender, newRoyaltyAdmin)) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (royaltyAdmin != newRoyaltyAdmin) {
             royaltyAdmin = newRoyaltyAdmin;
@@ -71,13 +74,9 @@ contract UsingGlobalRoyalties is IERC2981, IERC2981Administration, UsingERC165In
     }
 
     /// @inheritdoc IERC165
-    function supportsInterface(bytes4 interfaceID)
-        public
-        view
-        virtual
-        override(IERC165, UsingERC165Internal)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceID
+    ) public view virtual override(IERC165, UsingERC165Internal) returns (bool) {
         return super.supportsInterface(interfaceID) || interfaceID == 0x2a55205a; /// 0x2a55205a is ERC2981 (royalty standard)
     }
 }

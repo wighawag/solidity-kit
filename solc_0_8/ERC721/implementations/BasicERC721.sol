@@ -3,12 +3,14 @@ pragma solidity ^0.8.0;
 
 import "../interfaces/IERC721Receiver.sol";
 import "../interfaces/IERC721.sol";
+import "../interfaces/UsingERC721Errors.sol";
 import "../interfaces/IERC721WithBlocknumber.sol";
 import "./ImplementingERC721Internal.sol";
+import "../../utils/UsingGenericErrors.sol";
 
 import "../../openzeppelin/contracts/utils/Address.sol";
 
-abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingERC721Internal {
+abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingERC721Internal, UsingERC721Errors {
     using Openzeppelin_Address for address;
 
     bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
@@ -27,17 +29,13 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
             revert NonExistentToken(tokenID);
         }
         if (msg.sender != owner && !isApprovedForAll(owner, msg.sender)) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         _approveFor(owner, nonce, operator, tokenID);
     }
 
     /// @inheritdoc IERC721
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenID
-    ) external override {
+    function transferFrom(address from, address to, uint256 tokenID) external override {
         (address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenID);
         if (owner == address(0)) {
             revert NonExistentToken(tokenID);
@@ -50,18 +48,14 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
         }
         if (msg.sender != from) {
             if (!(operatorEnabled && _operators[tokenID] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
-                revert NotAuthorized();
+                revert UsingGenericErrors.NotAuthorized();
             }
         }
         _transferFrom(from, to, tokenID, (nonce >> 24) != 0);
     }
 
     /// @inheritdoc IERC721
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenID
-    ) external override {
+    function safeTransferFrom(address from, address to, uint256 tokenID) external override {
         safeTransferFrom(from, to, tokenID, "");
     }
 
@@ -105,12 +99,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     }
 
     /// @inheritdoc IERC721
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenID,
-        bytes memory data
-    ) public override {
+    function safeTransferFrom(address from, address to, uint256 tokenID, bytes memory data) public override {
         (address owner, uint256 nonce, bool operatorEnabled) = _ownerNonceAndOperatorEnabledOf(tokenID);
         if (owner == address(0)) {
             revert NonExistentToken(tokenID);
@@ -125,7 +114,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
 
         if (msg.sender != from) {
             if (!(operatorEnabled && _operators[tokenID] == msg.sender) && !isApprovedForAll(from, msg.sender)) {
-                revert NotAuthorized();
+                revert UsingGenericErrors.NotAuthorized();
             }
         }
         _safeTransferFrom(from, to, tokenID, (nonce >> 24) != 0, data);
@@ -140,24 +129,18 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     }
 
     /// @inheritdoc IERC721WithBlocknumber
-    function ownerAndLastTransferBlockNumberOf(uint256 tokenID)
-        external
-        view
-        override
-        returns (address owner, uint256 blockNumber)
-    {
+    function ownerAndLastTransferBlockNumberOf(
+        uint256 tokenID
+    ) external view override returns (address owner, uint256 blockNumber) {
         (address currentOwner, uint256 nonce) = _ownerAndNonceOf(tokenID);
         owner = currentOwner;
         blockNumber = (nonce >> 24);
     }
 
     /// @inheritdoc IERC721WithBlocknumber
-    function ownerAndLastTransferBlockNumberList(uint256[] calldata tokenIDs)
-        external
-        view
-        virtual
-        returns (OwnerData[] memory ownersData)
-    {
+    function ownerAndLastTransferBlockNumberList(
+        uint256[] calldata tokenIDs
+    ) external view virtual returns (OwnerData[] memory ownersData) {
         ownersData = new OwnerData[](tokenIDs.length);
         for (uint256 i = 0; i < tokenIDs.length; i++) {
             uint256 data = _owners[tokenIDs[i]];
@@ -174,13 +157,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
         _safeTransferFrom(address(0), to, tokenID, false, "");
     }
 
-    function _safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenID,
-        bool registered,
-        bytes memory data
-    ) internal {
+    function _safeTransferFrom(address from, address to, uint256 tokenID, bool registered, bytes memory data) internal {
         _transferFrom(from, to, tokenID, registered);
         if (to.isContract()) {
             if (!_checkOnERC721Received(msg.sender, from, to, tokenID, data)) {
@@ -189,12 +166,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
         }
     }
 
-    function _transferFrom(
-        address from,
-        address to,
-        uint256 tokenID,
-        bool registered
-    ) internal virtual {
+    function _transferFrom(address from, address to, uint256 tokenID, bool registered) internal virtual {
         unchecked {
             _balances[to]++;
             if (registered) {
@@ -208,12 +180,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     }
 
     /// @dev See approve.
-    function _approveFor(
-        address owner,
-        uint256 nonce,
-        address operator,
-        uint256 tokenID
-    ) internal override {
+    function _approveFor(address owner, uint256 nonce, address operator, uint256 tokenID) internal override {
         uint256 blockNumber = nonce >> 24;
         uint256 newNonce = nonce + 1;
         if (newNonce >> 24 != blockNumber) {
@@ -229,11 +196,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     }
 
     /// @dev See setApprovalForAll.
-    function _setApprovalForAll(
-        address sender,
-        address operator,
-        bool approved
-    ) internal override {
+    function _setApprovalForAll(address sender, address operator, bool approved) internal override {
         _operatorsForAll[sender][operator] = approved;
 
         emit ApprovalForAll(sender, operator, approved);
@@ -267,12 +230,9 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     /// @param tokenID The token to query.
     /// @return owner The owner of the token.
     /// @return operatorEnabled Whether or not operators are enabled for this token.
-    function _ownerAndOperatorEnabledOf(uint256 tokenID)
-        internal
-        view
-        virtual
-        returns (address owner, bool operatorEnabled)
-    {
+    function _ownerAndOperatorEnabledOf(
+        uint256 tokenID
+    ) internal view virtual returns (address owner, bool operatorEnabled) {
         uint256 data = _owners[tokenID];
         owner = address(uint160(data));
         operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;
@@ -293,16 +253,9 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     /// @return owner The owner of the token.
     /// @return nonce the nonce for permit (also incluse the blocknumer in the 64 higer bits (88 bits in total))
     /// @return operatorEnabled Whether or not operators are enabled for this token.
-    function _ownerNonceAndOperatorEnabledOf(uint256 tokenID)
-        internal
-        view
-        virtual
-        returns (
-            address owner,
-            uint256 nonce,
-            bool operatorEnabled
-        )
-    {
+    function _ownerNonceAndOperatorEnabledOf(
+        uint256 tokenID
+    ) internal view virtual returns (address owner, uint256 nonce, bool operatorEnabled) {
         uint256 data = _owners[tokenID];
         owner = address(uint160(data));
         operatorEnabled = (data & OPERATOR_FLAG) == OPERATOR_FLAG;

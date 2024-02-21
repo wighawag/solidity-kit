@@ -5,6 +5,7 @@ import "../interfaces/IERC173.sol";
 import "../interfaces/IWithdrawable.sol";
 import "../internal/UsingInternalOwner.sol";
 import "../../ERC20/interfaces/IERC20.sol";
+import "../../utils/UsingGenericErrors.sol";
 
 contract Owned is IERC173, IWithdrawable, UsingInternalOwner {
     constructor(address initialOwner) {
@@ -22,7 +23,7 @@ contract Owned is IERC173, IWithdrawable, UsingInternalOwner {
     function transferOwnership(address newOwner) external {
         address previousOwner = _getOwner();
         if (msg.sender != previousOwner) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         _setOwner(previousOwner, newOwner);
     }
@@ -30,7 +31,7 @@ contract Owned is IERC173, IWithdrawable, UsingInternalOwner {
     /// @inheritdoc IWithdrawable
     function withdrawERC20(IERC20 token, address to) external {
         if (msg.sender != _getOwner()) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         token.transfer(to, token.balanceOf(address(this)));
     }
@@ -60,7 +61,7 @@ contract Owned is IERC173, IWithdrawable, UsingInternalOwner {
 
     modifier onlyOwner() {
         if (msg.sender != _getOwner()) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         _;
     }

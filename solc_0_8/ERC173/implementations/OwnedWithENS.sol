@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./Owned.sol";
 import "../interfaces/IENSName.sol";
+import "../../utils/UsingGenericErrors.sol";
 
 interface ReverseRegistrar {
     function setName(string memory name) external returns (bytes32);
@@ -24,7 +25,7 @@ contract OwnedWithENS is Owned, IENSName {
     /// @inheritdoc IENSName
     function setENSName(string memory name) external {
         if (msg.sender != _getOwner()) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         ReverseRegistrar reverseRegistrar = ReverseRegistrar(_ens.owner(ADDR_REVERSE_NODE));
         reverseRegistrar.setName(name);

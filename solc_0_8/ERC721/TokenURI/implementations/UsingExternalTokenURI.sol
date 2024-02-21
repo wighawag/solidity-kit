@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "../interfaces/ITokenURI.sol";
+import "../interfaces/IERC721WithExternalTokenURI.sol";
 import "../../../utils/Guardian/libraries/Guarded.sol";
-import "../../../utils/GenericErrors.sol";
+import "../../../utils/UsingGenericErrors.sol";
 
 contract UsingExternalTokenURI is IERC721WithExternalTokenURI {
     /// @inheritdoc IERC721WithExternalTokenURI
@@ -28,7 +29,7 @@ contract UsingExternalTokenURI is IERC721WithExternalTokenURI {
     /// @inheritdoc IERC721WithExternalTokenURI
     function setTokenURIAdmin(address newTokenURIAdmin) external {
         if (msg.sender != tokenURIAdmin && !Guarded.isGuardian(msg.sender, newTokenURIAdmin)) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (tokenURIAdmin != newTokenURIAdmin) {
             tokenURIAdmin = newTokenURIAdmin;
@@ -44,7 +45,7 @@ contract UsingExternalTokenURI is IERC721WithExternalTokenURI {
     /// @inheritdoc IERC721WithExternalTokenURI
     function setTokenURIContract(ITokenURI newTokenURIContract) external {
         if (msg.sender != tokenURIAdmin) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (tokenURIContract != newTokenURIContract) {
             tokenURIContract = newTokenURIContract;

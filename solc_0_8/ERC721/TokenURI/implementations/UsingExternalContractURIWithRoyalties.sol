@@ -2,8 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "../interfaces/IContractURI.sol";
+import "../interfaces/IERC721WithExternalContractURI.sol";
 import "../../../ERC2981/implementations/UsingGlobalRoyalties.sol";
 import "../../../utils/Guardian/libraries/Guarded.sol";
+import "../../../utils/UsingGenericErrors.sol";
 
 contract UsingExternalContractURIWithRoyalties is UsingGlobalRoyalties, IERC721WithExternalContractURI {
     /// @inheritdoc IERC721WithExternalContractURI
@@ -38,7 +40,7 @@ contract UsingExternalContractURIWithRoyalties is UsingGlobalRoyalties, IERC721W
     /// @inheritdoc IERC721WithExternalContractURI
     function setContractURIAdmin(address newContractURIAdmin) external {
         if (msg.sender != contractURIAdmin && !Guarded.isGuardian(msg.sender, newContractURIAdmin)) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (contractURIAdmin != newContractURIAdmin) {
             contractURIAdmin = newContractURIAdmin;
@@ -54,7 +56,7 @@ contract UsingExternalContractURIWithRoyalties is UsingGlobalRoyalties, IERC721W
     /// @inheritdoc IERC721WithExternalContractURI
     function setContractURI(IExternalContractURI newContractURIAddress) external {
         if (msg.sender != contractURIAdmin) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (contractURIAddress != newContractURIAddress) {
             contractURIAddress = newContractURIAddress;

@@ -3,8 +3,11 @@ pragma solidity ^0.8.0;
 
 import "../../implementations/ImplementingERC20Internal.sol";
 import "../interfaces/IERC2612.sol";
+import "../interfaces/UsingERC2612Errors.sol";
 import "../../../ERC712/implementations/UsingERC712.sol";
 import "../../../ERC712/implementations/ImplementingExternalDomainSeparator.sol";
+import "../../interfaces/UsingERC20Errors.sol";
+import "../../../utils/UsingGenericErrors.sol";
 
 abstract contract UsingPermit is ImplementingERC20Internal, ImplementingExternalDomainSeparator, UsingERC712, IERC2612 {
     bytes32 internal constant PERMIT_TYPEHASH =
@@ -36,7 +39,7 @@ abstract contract UsingPermit is ImplementingERC20Internal, ImplementingExternal
         bytes32 s
     ) external override {
         if (owner == address(0)) {
-            revert InvalidAddress(address(0));
+            revert UsingERC20Errors.InvalidAddress(address(0));
         }
 
         uint256 currentNonce = _nonces[owner];
@@ -48,10 +51,10 @@ abstract contract UsingPermit is ImplementingERC20Internal, ImplementingExternal
             )
         );
         if (owner != ecrecover(digest, v, r, s)) {
-            revert InvalidSignature();
+            revert UsingERC2612Errors.InvalidSignature();
         }
         if (deadline != 0 && block.timestamp > deadline) {
-            revert DeadlineOver(block.timestamp, deadline);
+            revert UsingERC2612Errors.DeadlineOver(block.timestamp, deadline);
         }
 
         _nonces[owner] = currentNonce + 1;

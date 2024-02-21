@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../../utils/Guardian/libraries/Guarded.sol";
 import "../interfaces/IERC721Mintable.sol";
-import "../../utils/GenericErrors.sol";
+import "../../utils/UsingGenericErrors.sol";
 
 contract UsingExternalMinter is IERC721WithExternalMinter {
     /// @inheritdoc IERC721WithExternalMinter
@@ -22,7 +22,7 @@ contract UsingExternalMinter is IERC721WithExternalMinter {
     /// @inheritdoc IERC721WithExternalMinter
     function setMinterAdmin(address newMinterAdmin) external {
         if (msg.sender != minterAdmin && !Guarded.isGuardian(msg.sender, newMinterAdmin)) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (newMinterAdmin != minterAdmin) {
             minterAdmin = newMinterAdmin;
@@ -33,7 +33,7 @@ contract UsingExternalMinter is IERC721WithExternalMinter {
     /// @inheritdoc IERC721WithExternalMinter
     function setMinter(address newMinter) external {
         if (msg.sender != minterAdmin) {
-            revert NotAuthorized();
+            revert UsingGenericErrors.NotAuthorized();
         }
         if (minter != newMinter) {
             minter = newMinter;

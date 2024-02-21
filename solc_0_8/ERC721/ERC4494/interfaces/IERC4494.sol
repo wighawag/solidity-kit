@@ -4,13 +4,6 @@ pragma solidity ^0.8.0;
 import "../../../ERC165/interfaces/IERC165.sol";
 
 interface IERC4494 is IERC165 {
-    /// @notice The permit has expired
-    /// @param currentTime time at which the error happen
-    /// @param deadline the deadline
-    error DeadlineOver(uint256 currentTime, uint256 deadline);
-    /// @notice The signature do not match the expected signer
-    error InvalidSignature();
-
     /// @notice EIP-712 Domain separator hash
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 
@@ -25,12 +18,7 @@ interface IERC4494 is IERC165 {
     /// @param tokenID the token id
     /// @param deadline the deadline for the permit to be used
     /// @param signature permit
-    function permit(
-        address spender,
-        uint256 tokenID,
-        uint256 deadline,
-        bytes memory signature
-    ) external;
+    function permit(address spender, uint256 tokenID, uint256 deadline, bytes memory signature) external;
 }
 
 interface IERC4494PermitForAll {
@@ -48,12 +36,7 @@ interface IERC4494PermitForAll {
     /// @param spender the actor to approve
     /// @param deadline the deadline for the permit to be used
     /// @param signature permit
-    function permitForAll(
-        address signer,
-        address spender,
-        uint256 deadline,
-        bytes memory signature
-    ) external;
+    function permitForAll(address signer, address spender, uint256 deadline, bytes memory signature) external;
 }
 
 interface IERC4494Alternative is IERC165 {
@@ -71,10 +54,5 @@ interface IERC4494Alternative is IERC165 {
     /// @param tokenID the token id
     /// @param deadline the deadline for the permit to be used
     /// @param signature permit
-    function permit(
-        address spender,
-        uint256 tokenID,
-        uint256 deadline,
-        bytes memory signature
-    ) external;
+    function permit(address spender, uint256 tokenID, uint256 deadline, bytes memory signature) external;
 }
