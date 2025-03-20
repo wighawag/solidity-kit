@@ -6,6 +6,10 @@ interface UsingERC721Errors {
     /// @param tokenID id of the expected token
     error NonExistentToken(uint256 tokenID);
 
+    /// @notice The token already exists
+    /// @param tokenID id of the expected token
+    error TokenAlreadyExists(uint256 tokenID);
+
     /// @notice The address from which the token is sent is not the current owner
     /// @param provided the address expected to be the current owner
     /// @param currentOwner the current owner

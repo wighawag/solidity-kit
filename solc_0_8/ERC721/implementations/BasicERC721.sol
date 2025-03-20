@@ -169,6 +169,10 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     }
 
     function _safeMint(address to, uint256 tokenID) internal {
+        address owner = _ownerOf(tokenID);
+        if (owner != address(0)) {
+            revert TokenAlreadyExists(tokenID);
+        }
         _safeTransferFrom(address(0), to, tokenID, false, "");
     }
 
