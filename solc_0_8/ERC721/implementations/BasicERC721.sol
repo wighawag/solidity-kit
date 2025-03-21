@@ -154,24 +154,22 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     // ------------------------------------------------------------------------------------------------------------------
 
     function _burn(uint256 tokenID) internal {
-        (address owner, uint256 nonce, ) = _ownerNonceAndOperatorEnabledOf(tokenID);
+        address owner = _ownerOf(tokenID);
         if (owner == address(0)) {
             revert NonExistentToken(tokenID);
         }
-        unchecked {
-            // if registered
-            if ((nonce >> 24) != 0) {
-                _balances[owner]--;
-            }
-        }
-        _owners[tokenID] = 0;
+        _balances[owner]--; 
+        _owners[tokenID] = (block.number << 184);
         emit Transfer(owner, address(0), tokenID);
     }
 
-    function _safeMint(address to, uint256 tokenID) internal {
-        address owner = _ownerOf(tokenID);
+    function _safeMint(address to, uint256 tokenID, bool remintingAllowed) internal {
+        (address owner, uint256 nonce, ) = _ownerNonceAndOperatorEnabledOf(tokenID);
         if (owner != address(0)) {
             revert TokenAlreadyExists(tokenID);
+        }
+        if (!remintingAllowed && nonce != 0) {
+            revert TokenCannotBeReminted(tokenID);
         }
         _safeTransferFrom(address(0), to, tokenID, false, "");
     }
