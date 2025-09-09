@@ -153,12 +153,12 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
     // INTERNALS
     // ------------------------------------------------------------------------------------------------------------------
 
-    function _burn(uint256 tokenID) internal {
+    function _burn(uint256 tokenID) internal virtual {
         address owner = _ownerOf(tokenID);
         if (owner == address(0)) {
             revert NonExistentToken(tokenID);
         }
-        _balances[owner]--; 
+        _balances[owner]--;
         _owners[tokenID] = (block.number << 184);
         emit Transfer(owner, address(0), tokenID);
     }
