@@ -6,19 +6,23 @@ import {
 	createPublicClient,
 	createWalletClient,
 	custom,
-	defineChain,
 	getContract,
 } from 'viem';
 
 import hre from 'hardhat';
 import type {EIP1193ProviderWithoutEvents} from 'eip-1193';
 import {Chain} from 'viem';
+import {loadEnvironmentFromHardhat} from '#rocketh';
+import {getHardhatConnection} from 'hardhat-deploy';
+import {EthereumProvider} from 'hardhat/types/providers';
+import {NetworkHelpers} from '@nomicfoundation/hardhat-network-helpers/types';
 
 export type Connection = {
 	walletClient: WalletClient<CustomTransport, Chain>;
 	publicClient: PublicClient<CustomTransport, Chain>;
 	accounts: `0x${string}`[];
 	provider: EIP1193ProviderWithoutEvents;
+	networkHelpers: NetworkHelpers;
 };
 
 const cache: {connection?: Connection} = {};
@@ -26,38 +30,22 @@ export async function getConnection(): Promise<Connection> {
 	if (cache.connection) {
 		return cache.connection;
 	}
-	const provider = hre.network.provider as EIP1193ProviderWithoutEvents;
-
-	const chainIdAsHex = await provider.request({method: 'eth_chainId'});
-	const chainIdAsNumber = Number(chainIdAsHex);
-	const chain = defineChain({
-		id: chainIdAsNumber,
-		name: hre.network.name,
-		network: hre.network.name,
-		nativeCurrency: {
-			decimals: 18,
-			name: 'Ether',
-			symbol: 'ETH',
-		},
-		rpcUrls: {
-			default: {http: []},
-			public: {http: []},
-		},
-	} as const);
+	const env = await loadEnvironmentFromHardhat({hre});
 
 	const walletClient = createWalletClient({
-		chain,
-		transport: custom(provider),
+		chain: env.network.chain,
+		transport: custom(env.network.provider),
 	});
 	const publicClient = createPublicClient({
-		chain,
-		transport: custom(provider),
+		chain: env.network.chain,
+		transport: custom(env.network.provider),
 	});
 	return (cache.connection = {
 		walletClient,
 		publicClient,
 		accounts: await walletClient.getAddresses(),
-		provider,
+		provider: env.network.provider,
+		networkHelpers: getHardhatConnection(env).networkHelpers,
 	});
 }
 

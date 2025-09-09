@@ -1,19 +1,16 @@
-import {execute} from 'rocketh';
-import 'rocketh-deploy';
-import {context} from '../../_context';
+import {artifacts, deployScript} from '#rocketh';
 
-export default execute(
-	context,
-	async ({deploy, accounts, artifacts}) => {
+export default deployScript(
+	async ({deploy, namedAccounts}) => {
 		await deploy(
 			'Time',
 			{
-				account: accounts['solidity-kit:deployer'] || accounts['deployer'],
+				account: namedAccounts['solidity-kit:deployer'],
 				artifact: artifacts.Time,
-				args: [accounts['solidity-kit:time-owner']],
+				args: [namedAccounts['solidity-kit:time-owner']],
 			},
-			{deterministic: true}
+			{deterministic: true},
 		);
 	},
-	{tags: ['Time', 'Time_deploy']}
+	{tags: ['Time', 'Time_deploy']},
 );

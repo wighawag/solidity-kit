@@ -1,38 +1,13 @@
-import {expect, describe, it} from 'vitest';
-import {loadFixture} from '@nomicfoundation/hardhat-network-helpers';
-import {getConnection, fetchContract} from '../utils/connection';
-import artifacts from '../generated/artifacts';
-import { parseEther } from 'viem';
+import {expect} from 'earl';
+import {describe, it} from 'node:test'; // using node:test as hardhat v3 do not support vitest
+import {setupFixtures} from './utils/index.js';
 
-async function deployTestTokens() {
-	const {accounts, walletClient, publicClient} = await getConnection();
-	const [deployer, ...otherAccounts] = accounts;
-
-	const deploymentHash = await walletClient.deployContract({
-		...artifacts.TestTokens,
-		account: deployer,
-		args: [deployer, parseEther("10")]
-	});
-
-	const receipt = await publicClient.getTransactionReceipt({hash: deploymentHash});
-	const TestTokens = await fetchContract({
-		...artifacts.TestTokens,
-		address: receipt.contractAddress as `0x${string}`,
-	});
-
-	return {
-		TestTokens,
-		deployer,
-		otherAccounts,
-	};
-}
+const {deployTestTokens, networkHelpers} = await setupFixtures();
 
 describe('TestTokens', function () {
 	it('TestTokens', async function () {
-		const {TestTokens} = await loadFixture(deployTestTokens);
+		const {TestTokens} = await networkHelpers.loadFixture(deployTestTokens);
 		const decimals = await TestTokens.read.decimals();
-		expect(decimals).to.equal(18);
+		expect(decimals).toEqual(18);
 	});
-
-	
 });
