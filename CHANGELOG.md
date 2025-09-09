@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.5.4
+
+### Patch Changes
+
+- add EnumerableERC721
+
 ## 0.5.0
 
 ### Minor Changes
