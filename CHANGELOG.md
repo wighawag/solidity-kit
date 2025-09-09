@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.5.6
+
+### Patch Changes
+
+- forgot to compile artifacts
+
 ## 0.5.5
 
 ### Patch Changes
