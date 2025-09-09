@@ -46,10 +46,23 @@ contract EnumerableERC721 is IERC721Enumerable, BasicERC721 {
     // ------------------------------------------------------------------------
     // EXTRA FUNCTIONALITY
     // ------------------------------------------------------------------------
-    function tokensOfOwner(address owner, uint256 index, uint256 limit) external view returns (uint256[] memory) {
+    /// @notice returns the list of token ids owned by the account specified
+    /// @dev Note that when calling multiple time, to fetch more than limit
+    ///  you need to make sure to specify the block to target to ensure
+    ///  consistency as token order can change
+    /// @param owner An address where we are interested in NFTs owned by them
+    /// @param index A counter less than `balanceOf(_owner)`
+    /// @param limit the max number of token ids to return
+    /// @return tokenIDs the list of ids
+    /// @return more a boolean indicating whether there is more to fetch
+    function tokensOfOwner(
+        address owner,
+        uint256 index,
+        uint256 limit
+    ) external view returns (uint256[] memory tokenIDs, bool more) {
         uint256 total = balanceOf(owner);
         if (index >= total) {
-            return new uint256[](0);
+            return (new uint256[](0), false);
         }
         uint256 max = total - index;
         uint256 actualLimit = limit > max ? max : limit;
@@ -60,7 +73,7 @@ contract EnumerableERC721 is IERC721Enumerable, BasicERC721 {
             list[i] = _ownedTokens[owner][index + i];
         }
 
-        return list;
+        return (list, actualLimit != limit);
     }
     // ------------------------------------------------------------------------
 

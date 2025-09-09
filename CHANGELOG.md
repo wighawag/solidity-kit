@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.5.5
+
+### Patch Changes
+
+- tokensOfOwners return also a boolean
+
 ## 0.5.4
 
 ### Patch Changes
