@@ -9,29 +9,29 @@ importers:
   .:
     devDependencies:
       '@changesets/cli':
-        specifier: ^2.29.6
-        version: 2.29.6(@types/node@24.3.1)
+        specifier: ^2.29.7
+        version: 2.29.7(@types/node@24.3.1)
       '@nomicfoundation/hardhat-keystore':
         specifier: ^3.0.1
-        version: 3.0.1(hardhat@3.0.4)
+        version: 3.0.1(hardhat@3.0.6)
       '@nomicfoundation/hardhat-network-helpers':
         specifier: ^3.0.0
-        version: 3.0.0(hardhat@3.0.4)
+        version: 3.0.0(hardhat@3.0.6)
       '@nomicfoundation/hardhat-node-test-runner':
-        specifier: ^3.0.2
-        version: 3.0.2(hardhat@3.0.4)
+        specifier: ^3.0.3
+        version: 3.0.3(hardhat@3.0.6)
       '@nomicfoundation/hardhat-viem':
         specifier: ^3.0.0
-        version: 3.0.0(hardhat@3.0.4)(viem@2.37.5(typescript@5.9.2)(zod@4.1.5))
+        version: 3.0.0(hardhat@3.0.6)(viem@2.37.5(typescript@5.9.2)(zod@4.1.5))
       '@rocketh/deploy':
         specifier: ^0.14.0
         version: 0.14.0(typescript@5.9.2)(zod@4.1.5)
       '@rocketh/doc':
-        specifier: ^0.14.5
-        version: 0.14.5(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5))
+        specifier: ^0.14.6
+        version: 0.14.6(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))
       '@rocketh/export':
-        specifier: ^0.14.5
-        version: 0.14.5(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5))
+        specifier: ^0.14.6
+        version: 0.14.6(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))
       '@rocketh/proxy':
         specifier: ^0.14.0
         version: 0.14.1(typescript@5.9.2)(zod@4.1.5)
@@ -42,11 +42,14 @@ importers:
         specifier: ^0.14.0
         version: 0.14.0(typescript@5.9.2)(zod@4.1.5)
       '@rocketh/verifier':
-        specifier: ^0.14.5
-        version: 0.14.5(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5))
+        specifier: ^0.14.6
+        version: 0.14.6(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))
       '@rocketh/viem':
         specifier: ^0.14.0
         version: 0.14.0(viem@2.37.5(typescript@5.9.2)(zod@4.1.5))
+      '@types/node':
+        specifier: ^24.3.1
+        version: 24.3.1
       as-soon:
         specifier: ^0.0.11
         version: 0.0.11
@@ -66,11 +69,11 @@ importers:
         specifier: ^0.7.0
         version: 0.7.9(typescript@5.9.2)(zod@4.1.5)
       hardhat:
-        specifier: ^3.0.4
-        version: 3.0.4
+        specifier: ^3.0.6
+        version: 3.0.6
       hardhat-deploy:
-        specifier: ^2.0.0-next.41
-        version: 2.0.0-next.41(hardhat@3.0.4)(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5))
+        specifier: ^2.0.0-next.43
+        version: 2.0.0-next.43(hardhat@3.0.6)(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))
       ldenv:
         specifier: ^0.3.9
         version: 0.3.12
@@ -84,14 +87,14 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(prettier@3.6.2)
       rocketh:
-        specifier: ^0.14.5
-        version: 0.14.5(typescript@5.9.2)(zod@4.1.5)
+        specifier: ^0.14.6
+        version: 0.14.6(typescript@5.9.2)(zod@4.1.5)
       set-defaults:
         specifier: ^0.0.5
         version: 0.0.5
       solidity-coverage:
         specifier: ^0.8.16
-        version: 0.8.16(hardhat@3.0.4)
+        version: 0.8.16(hardhat@3.0.6)
       tsx:
         specifier: ^4.20.5
         version: 4.20.5
@@ -132,8 +135,8 @@ packages:
   '@bytecodealliance/preview2-shim@0.17.2':
     resolution: {integrity: sha512-mNm/lblgES8UkVle8rGImXOz4TtL3eU3inHay/7TVchkKrb/lgcVvTK0+VAw8p5zQ0rgQsXm1j5dOlAAd+MeoA==}
 
-  '@changesets/apply-release-plan@7.0.12':
-    resolution: {integrity: sha512-EaET7As5CeuhTzvXTQCRZeBUcisoYPDDcXvgTE/2jmmypKp0RC7LxKj/yzqeh/1qFTZI7oDGFcL1PHRuQuketQ==}
+  '@changesets/apply-release-plan@7.0.13':
+    resolution: {integrity: sha512-BIW7bofD2yAWoE8H4V40FikC+1nNFEKBisMECccS16W1rt6qqhNTBDmIw5HaqmMgtLNz9e7oiALiEUuKrQ4oHg==}
 
   '@changesets/assemble-release-plan@6.0.9':
     resolution: {integrity: sha512-tPgeeqCHIwNo8sypKlS3gOPmsS3wP0zHt67JDuL20P4QcXiw/O4Hl7oXiuLnP9yg+rXLQ2sScdV1Kkzde61iSQ==}
@@ -141,8 +144,8 @@ packages:
   '@changesets/changelog-git@0.2.1':
     resolution: {integrity: sha512-x/xEleCFLH28c3bQeQIyeZf8lFXyDFVn1SgcBiR2Tw/r4IAWlk1fzxCEZ6NxQAjF2Nwtczoen3OA2qR+UawQ8Q==}
 
-  '@changesets/cli@2.29.6':
-    resolution: {integrity: sha512-6qCcVsIG1KQLhpQ5zE8N0PckIx4+9QlHK3z6/lwKnw7Tir71Bjw8BeOZaxA/4Jt00pcgCnCSWZnyuZf5Il05QQ==}
+  '@changesets/cli@2.29.7':
+    resolution: {integrity: sha512-R7RqWoaksyyKXbKXBTbT4REdy22yH81mcFK6sWtqSanxUCbUi9Uf+6aqxZtDQouIqPdem2W56CdxXgsxdq7FLQ==}
     hasBin: true
 
   '@changesets/config@3.1.1':
@@ -565,6 +568,9 @@ packages:
   '@nomicfoundation/hardhat-errors@3.0.1':
     resolution: {integrity: sha512-qXzTDmND5aNSolxms6shuLlPK8+rugKjDsLb1BRVAYnZfPBCIc52v8nX2HEW+/qBRp3YMZVDyJVrhud+Uby2JQ==}
 
+  '@nomicfoundation/hardhat-errors@3.0.2':
+    resolution: {integrity: sha512-8n4HZ0lfAFSw3SU1mrDXWslh11jH4W5MRyG9yT4d/vzx37uA3JBIzVQlnGVvE2ejl1QzqOqOxDuQqANWEzI9/w==}
+
   '@nomicfoundation/hardhat-keystore@3.0.1':
     resolution: {integrity: sha512-IHjTWf88Kp6ZsnwngVYNJphWwwhnkSjg+wBd9im5yo8IbvCjd0Otyv2ucw0Dol+mxM3t/6XJhEnhbA3JGe/EdQ==}
     peerDependencies:
@@ -578,13 +584,16 @@ packages:
   '@nomicfoundation/hardhat-node-test-reporter@3.0.1':
     resolution: {integrity: sha512-p6yNKZFnJ2OMplXx7zi45KGWr4hr/qMkg+gTuSSLLlph7NL1DGjGG+N6GrZs46AGSrsnYEocKXGnavl92dxEig==}
 
-  '@nomicfoundation/hardhat-node-test-runner@3.0.2':
-    resolution: {integrity: sha512-1cCJ/R5kMCja0tqdjFbeoLJugUNxGKATDq14KILYj0FjDZsJr3Kh1P3HiikTNSgG+pK5H2t2llVQ8ycWMXncFg==}
+  '@nomicfoundation/hardhat-node-test-runner@3.0.3':
+    resolution: {integrity: sha512-z6cfjSS0ZZKSVfxfhcC27KHp4YxbfX4AwHIHzmHfgwLG8jtmVo/p9LLKYd/QLWAVOWpF712n2c9NLrAqJn+Olg==}
     peerDependencies:
       hardhat: ^3.0.0
 
   '@nomicfoundation/hardhat-utils@3.0.0':
     resolution: {integrity: sha512-dpzumbxM69ny/BSVd/8jquZO3wjg61e+S81DJPJwQ7naeZNai1r9gYuxT65VgKKTYZG/xKwrP36tJvB+gRtBrg==}
+
+  '@nomicfoundation/hardhat-utils@3.0.2':
+    resolution: {integrity: sha512-d/LYe9k9W56dimt6mY6SA1SjadSKKyHZC2S+0JsSFr4BjU4SHBDaM0cKWx44JdZqBdMjLWCiRBcVaIq3X8qTAA==}
 
   '@nomicfoundation/hardhat-viem@3.0.0':
     resolution: {integrity: sha512-4QHBfTgJuo1O8vK9AO2AQYKsIp9yg06aF9C+WydDr2XS7VLJYh3g3gZdszLbSD9eHWsuviN688VKbcmfIZNWvQ==}
@@ -594,6 +603,11 @@ packages:
 
   '@nomicfoundation/hardhat-zod-utils@3.0.0':
     resolution: {integrity: sha512-xAi+45+V82pZZ9QGDEiii0wp+SXXH/8hS7/pk7S0gOG6h29gPuE42yek8wh3Ff0M+DrsB/RKZjcezmdwH5a6mQ==}
+    peerDependencies:
+      zod: ^3.23.8
+
+  '@nomicfoundation/hardhat-zod-utils@3.0.1':
+    resolution: {integrity: sha512-I6/pyYiS9p2lLkzQuedr1ScMocH+ew8l233xTi+LP92gjEiviJDxselpkzgU01MUM0t6BPpfP8yMO958LDEJVg==}
     peerDependencies:
       zod: ^3.23.8
 
@@ -717,17 +731,17 @@ packages:
   '@rocketh/deploy@0.14.0':
     resolution: {integrity: sha512-4uBIpKchoTZ9QSxyTYYT137+nI0beOlqkh10NWwNgBrQXPpFc51pDB2cDZkgzJpJ5Bzn5hL6klaEsVfPxmAvSA==}
 
-  '@rocketh/doc@0.14.5':
-    resolution: {integrity: sha512-QOH5d+R3q9s412jWtw/SDezgoW8XW0nkZa11VAPObYUDdmYy1XfuvgfDJkLpwMzWaXpm3Ij/CQe27VQVT5ieCQ==}
+  '@rocketh/doc@0.14.6':
+    resolution: {integrity: sha512-CCqmZYGJdme7DnOarrJvKC5HiTvtdiGJFZ2VUIVsk8Z3k8Pwk9nun0BMXTXXsg82WharC0KGoxi5asQ1sQ4j1g==}
     hasBin: true
     peerDependencies:
-      rocketh: 0.14.5
+      rocketh: 0.14.6
 
-  '@rocketh/export@0.14.5':
-    resolution: {integrity: sha512-SvJZOW8OMUKqmReVOkfi3PzhMX8dy0fTcXWE+U/U5DMe79yzt19FVDbZV4FCQcHljreaGTyIXXOafZQr9nj5tw==}
+  '@rocketh/export@0.14.6':
+    resolution: {integrity: sha512-AC7fRsILfYTpstzSBj+7dGCt9K1kN4Obn1j0Q79GKHu8JvnjAHTRMf6fZO280g3vK1b5iS+zzIEvpwjoUpIQ8g==}
     hasBin: true
     peerDependencies:
-      rocketh: 0.14.5
+      rocketh: 0.14.6
 
   '@rocketh/proxy@0.14.1':
     resolution: {integrity: sha512-aNrMVeRH16LBrChSZGdgcOQA5ZQHtsJLKeZhcGgge0KQ7l1jKMWj+6mHgfYuXIxN86D4wcqSQRlX3y9efHFogw==}
@@ -738,11 +752,11 @@ packages:
   '@rocketh/router@0.14.0':
     resolution: {integrity: sha512-nMne4t8vuKu0CuJ+zAqeyWw+vhXGvcxr29dcENHpGu3KEKDO2cIf5NppZkWSeSmmEnxiKx40RsD+1kMwD4OlBw==}
 
-  '@rocketh/verifier@0.14.5':
-    resolution: {integrity: sha512-fuXEcPModA8ydzQfbYMBs7mY6APleVtI2Fhpd8aSDJn9BdRwxbfWHwNO6x31K2RiCjoj33OPGkvo+t35+wwYpg==}
+  '@rocketh/verifier@0.14.6':
+    resolution: {integrity: sha512-LUdKvVy91XA7jpGGcNiBfbwXJoxAgEqDm3OHxHgrQMMEKi2d558Aox+jmGcg4tQZ/lpu+yJxm0XsKZCGC+uiQA==}
     hasBin: true
     peerDependencies:
-      rocketh: 0.14.5
+      rocketh: 0.14.6
 
   '@rocketh/viem@0.14.0':
     resolution: {integrity: sha512-1RRVpCgPJrPQEIs9OUyVBzCzXNbhIME+HFJBLdYI4y4ol94otqcaTnoXC91bRLmTPb60fvfssKV4p8gK9pyUQw==}
@@ -1500,14 +1514,14 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
-  hardhat-deploy@2.0.0-next.41:
-    resolution: {integrity: sha512-27s7uA5gBjTmoOQyRvYdGQpvbScdJPLqd5giHVi6iOtzgyKoLkfw35k/8r1EdWdf93xkNtK01SpvAUtsP9Lo5w==}
+  hardhat-deploy@2.0.0-next.43:
+    resolution: {integrity: sha512-pvSD2vgtgsMYkt+oBpaRQ/YEX5W/3tfz9aLvoQGgFUobckcyLcjaNSX1a5UK6CiDDQ7VE7J9bOxOo8KYs3Gr8Q==}
     peerDependencies:
       hardhat: ^3.0.0
       rocketh: ^0.14.4
 
-  hardhat@3.0.4:
-    resolution: {integrity: sha512-6BoteHrD8nq5/yCUJGfYmspTulkjQZgRJOBPwXNZLz3fJV8B2wYLnDSbkKpyI97yhAmfzuc2qp6yBHPK5Msl4A==}
+  hardhat@3.0.6:
+    resolution: {integrity: sha512-x/h1ZAea4cuFsl4dTxLXd5H4dicadEVzYv2ytxIuLL9AJ6gAqSre9jyJSYWxnHmevjrB9R/RMv5oqHHRCjyk4g==}
     hasBin: true
 
   has-flag@1.0.0:
@@ -1981,8 +1995,8 @@ packages:
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
 
-  rocketh@0.14.5:
-    resolution: {integrity: sha512-gSdIFtGKXwkFOyya+uoh9TJuy1dzJ4svV4VyQ4OIbwI5nOH7adiio4gG6LDA0FNOozl/AZE8NnxO8vWqcSr6Zw==}
+  rocketh@0.14.6:
+    resolution: {integrity: sha512-BO/Ag23EzQR6Vgmvffxx5k9NTta59D7pEbk1IoBaftArxshXsgLz4XBN1jPjWLEiqQEaiZpjmykUq0eUd8oXMw==}
     hasBin: true
 
   rollup-pluginutils@2.8.2:
@@ -2329,7 +2343,7 @@ snapshots:
 
   '@bytecodealliance/preview2-shim@0.17.2': {}
 
-  '@changesets/apply-release-plan@7.0.12':
+  '@changesets/apply-release-plan@7.0.13':
     dependencies:
       '@changesets/config': 3.1.1
       '@changesets/get-version-range-type': 0.4.0
@@ -2358,9 +2372,9 @@ snapshots:
     dependencies:
       '@changesets/types': 6.1.0
 
-  '@changesets/cli@2.29.6(@types/node@24.3.1)':
+  '@changesets/cli@2.29.7(@types/node@24.3.1)':
     dependencies:
-      '@changesets/apply-release-plan': 7.0.12
+      '@changesets/apply-release-plan': 7.0.13
       '@changesets/assemble-release-plan': 6.0.9
       '@changesets/changelog-git': 0.2.1
       '@changesets/config': 3.1.1
@@ -2930,7 +2944,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@nomicfoundation/hardhat-keystore@3.0.1(hardhat@3.0.4)':
+  '@nomicfoundation/hardhat-errors@3.0.2':
+    dependencies:
+      '@nomicfoundation/hardhat-utils': 3.0.2
+    transitivePeerDependencies:
+      - supports-color
+
+  '@nomicfoundation/hardhat-keystore@3.0.1(hardhat@3.0.6)':
     dependencies:
       '@noble/ciphers': 1.2.1
       '@noble/hashes': 1.7.1
@@ -2939,16 +2959,16 @@ snapshots:
       '@nomicfoundation/hardhat-zod-utils': 3.0.0(zod@3.25.76)
       chalk: 5.6.2
       debug: 4.4.1(supports-color@8.1.1)
-      hardhat: 3.0.4
+      hardhat: 3.0.6
       zod: 3.25.76
     transitivePeerDependencies:
       - supports-color
 
-  '@nomicfoundation/hardhat-network-helpers@3.0.0(hardhat@3.0.4)':
+  '@nomicfoundation/hardhat-network-helpers@3.0.0(hardhat@3.0.6)':
     dependencies:
       '@nomicfoundation/hardhat-errors': 3.0.1
       '@nomicfoundation/hardhat-utils': 3.0.0
-      hardhat: 3.0.4
+      hardhat: 3.0.6
     transitivePeerDependencies:
       - supports-color
 
@@ -2958,13 +2978,13 @@ snapshots:
       chalk: 5.6.2
       jest-diff: 29.7.0
 
-  '@nomicfoundation/hardhat-node-test-runner@3.0.2(hardhat@3.0.4)':
+  '@nomicfoundation/hardhat-node-test-runner@3.0.3(hardhat@3.0.6)':
     dependencies:
-      '@nomicfoundation/hardhat-errors': 3.0.1
+      '@nomicfoundation/hardhat-errors': 3.0.2
       '@nomicfoundation/hardhat-node-test-reporter': 3.0.1
-      '@nomicfoundation/hardhat-utils': 3.0.0
-      '@nomicfoundation/hardhat-zod-utils': 3.0.0(zod@3.25.76)
-      hardhat: 3.0.4
+      '@nomicfoundation/hardhat-utils': 3.0.2
+      '@nomicfoundation/hardhat-zod-utils': 3.0.1(zod@3.25.76)
+      hardhat: 3.0.6
       tsx: 4.20.5
       zod: 3.25.76
     transitivePeerDependencies:
@@ -2983,11 +3003,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@nomicfoundation/hardhat-viem@3.0.0(hardhat@3.0.4)(viem@2.37.5(typescript@5.9.2)(zod@4.1.5))':
+  '@nomicfoundation/hardhat-utils@3.0.2':
+    dependencies:
+      '@streamparser/json-node': 0.0.22
+      debug: 4.4.1(supports-color@8.1.1)
+      env-paths: 2.2.1
+      ethereum-cryptography: 2.2.1
+      fast-equals: 5.2.2
+      json-stream-stringify: 3.1.6
+      rfdc: 1.4.1
+      undici: 6.21.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@nomicfoundation/hardhat-viem@3.0.0(hardhat@3.0.6)(viem@2.37.5(typescript@5.9.2)(zod@4.1.5))':
     dependencies:
       '@nomicfoundation/hardhat-errors': 3.0.1
       '@nomicfoundation/hardhat-utils': 3.0.0
-      hardhat: 3.0.4
+      hardhat: 3.0.6
       viem: 2.37.5(typescript@5.9.2)(zod@4.1.5)
     transitivePeerDependencies:
       - supports-color
@@ -3003,6 +3036,14 @@ snapshots:
     dependencies:
       '@nomicfoundation/hardhat-utils': 3.0.0
       zod: 4.1.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@nomicfoundation/hardhat-zod-utils@3.0.1(zod@3.25.76)':
+    dependencies:
+      '@nomicfoundation/hardhat-errors': 3.0.2
+      '@nomicfoundation/hardhat-utils': 3.0.2
+      zod: 3.25.76
     transitivePeerDependencies:
       - supports-color
 
@@ -3111,25 +3152,25 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@rocketh/doc@0.14.5(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5))':
+  '@rocketh/doc@0.14.6(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))':
     dependencies:
       '@types/fs-extra': 11.0.4
       commander: 13.1.0
       ethers: 6.15.0
       fs-extra: 11.3.1
       handlebars: 4.7.8
-      rocketh: 0.14.5(typescript@5.9.2)(zod@4.1.5)
+      rocketh: 0.14.6(typescript@5.9.2)(zod@4.1.5)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@rocketh/export@0.14.5(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5))':
+  '@rocketh/export@0.14.6(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))':
     dependencies:
       '@types/fs-extra': 11.0.4
       chalk: 5.4.1
       commander: 13.1.0
       fs-extra: 11.3.1
-      rocketh: 0.14.5(typescript@5.9.2)(zod@4.1.5)
+      rocketh: 0.14.6(typescript@5.9.2)(zod@4.1.5)
 
   '@rocketh/proxy@0.14.1(typescript@5.9.2)(zod@4.1.5)':
     dependencies:
@@ -3165,7 +3206,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@rocketh/verifier@0.14.5(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5))':
+  '@rocketh/verifier@0.14.6(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))':
     dependencies:
       '@types/fs-extra': 11.0.4
       '@types/qs': 6.14.0
@@ -3174,7 +3215,7 @@ snapshots:
       fs-extra: 11.3.1
       ldenv: 0.3.12
       neoqs: 6.13.0
-      rocketh: 0.14.5(typescript@5.9.2)(zod@4.1.5)
+      rocketh: 0.14.6(typescript@5.9.2)(zod@4.1.5)
 
   '@rocketh/viem@0.14.0(viem@2.37.5(typescript@5.9.2)(zod@4.1.5))':
     dependencies:
@@ -3965,24 +4006,24 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.19.3
 
-  hardhat-deploy@2.0.0-next.41(hardhat@3.0.4)(rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5)):
+  hardhat-deploy@2.0.0-next.43(hardhat@3.0.6)(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5)):
     dependencies:
       '@nomicfoundation/hardhat-zod-utils': 3.0.0(zod@4.1.5)
       '@types/debug': 4.1.12
       debug: 4.4.1(supports-color@8.1.1)
-      hardhat: 3.0.4
-      rocketh: 0.14.5(typescript@5.9.2)(zod@4.1.5)
+      hardhat: 3.0.6
+      rocketh: 0.14.6(typescript@5.9.2)(zod@4.1.5)
       slash: 5.1.0
       zod: 4.1.5
     transitivePeerDependencies:
       - supports-color
 
-  hardhat@3.0.4:
+  hardhat@3.0.6:
     dependencies:
       '@nomicfoundation/edr': 0.12.0-next.5
-      '@nomicfoundation/hardhat-errors': 3.0.1
-      '@nomicfoundation/hardhat-utils': 3.0.0
-      '@nomicfoundation/hardhat-zod-utils': 3.0.0(zod@3.25.76)
+      '@nomicfoundation/hardhat-errors': 3.0.2
+      '@nomicfoundation/hardhat-utils': 3.0.2
+      '@nomicfoundation/hardhat-zod-utils': 3.0.1(zod@3.25.76)
       '@nomicfoundation/solidity-analyzer': 0.1.2
       '@sentry/core': 9.46.0
       adm-zip: 0.4.16
@@ -4438,7 +4479,7 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rocketh@0.14.5(typescript@5.9.2)(zod@4.1.5):
+  rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5):
     dependencies:
       '@types/figlet': 1.7.0
       '@types/prompts': 2.4.9
@@ -4546,7 +4587,7 @@ snapshots:
 
   slash@5.1.0: {}
 
-  solidity-coverage@0.8.16(hardhat@3.0.4):
+  solidity-coverage@0.8.16(hardhat@3.0.6):
     dependencies:
       '@ethersproject/abi': 5.8.0
       '@solidity-parser/parser': 0.20.2
@@ -4557,7 +4598,7 @@ snapshots:
       ghost-testrpc: 0.0.2
       global-modules: 2.0.0
       globby: 10.0.2
-      hardhat: 3.0.4
+      hardhat: 3.0.6
       jsonschema: 1.5.0
       lodash: 4.17.21
       mocha: 10.8.2

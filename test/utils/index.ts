@@ -1,26 +1,26 @@
-import {artifacts} from '#rocketh';
+import {artifacts, loadEnvironmentFromHardhat} from '#rocketh';
 import {parseEther} from 'viem';
-import {fetchContract, getConnection} from '../../utils/connection';
+import {NetworkConnection} from 'hardhat/types/network';
+import hre from 'hardhat';
 
-export async function setupFixtures() {
-	const {accounts, walletClient, publicClient, networkHelpers} = await getConnection();
-
+export function setupFixtures(connection: NetworkConnection) {
 	return {
-		networkHelpers,
 		async deployTestTokens() {
-			const [deployer, ...otherAccounts] = accounts;
+			const env = await loadEnvironmentFromHardhat({hre, connection});
 
-			const deploymentHash = await walletClient.deployContract({
-				...artifacts.TestTokens,
+			const walletClient = env.viem.walletClient;
+			const [deployer, ...otherAccounts] = (await walletClient.getAddresses()).map(
+				// TODO fix it in rocketh ?
+				(v) => v.toLowerCase() as `0x${string}`,
+			);
+
+			const TestTokensDeployment = await env.deploy('TestTokens', {
+				artifact: artifacts.TestTokens,
 				account: deployer,
 				args: [deployer, parseEther('10')],
 			});
 
-			const receipt = await publicClient.getTransactionReceipt({hash: deploymentHash});
-			const TestTokens = await fetchContract({
-				...artifacts.TestTokens,
-				address: receipt.contractAddress as `0x${string}`,
-			});
+			const TestTokens = await env.viem.getWritableContract(TestTokensDeployment);
 
 			return {
 				TestTokens,
