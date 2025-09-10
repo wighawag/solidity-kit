@@ -1,5 +1,11 @@
 # solidity-kit
 
+## 0.5.7
+
+### Patch Changes
+
+- add data to \_safeMint
+
 ## 0.5.6
 
 ### Patch Changes

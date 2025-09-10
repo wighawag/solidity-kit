@@ -163,7 +163,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
         emit Transfer(owner, address(0), tokenID);
     }
 
-    function _safeMint(address to, uint256 tokenID, bool remintingAllowed) internal {
+    function _safeMint(address to, uint256 tokenID, bool remintingAllowed, bytes memory data) internal {
         (address owner, uint256 nonce, ) = _ownerNonceAndOperatorEnabledOf(tokenID);
         if (owner != address(0)) {
             revert TokenAlreadyExists(tokenID);
@@ -171,7 +171,7 @@ abstract contract BasicERC721 is IERC721, IERC721WithBlocknumber, ImplementingER
         if (!remintingAllowed && nonce != 0) {
             revert TokenCannotBeReminted(tokenID);
         }
-        _safeTransferFrom(address(0), to, tokenID, false, "");
+        _safeTransferFrom(address(0), to, tokenID, false, data);
     }
 
     function _safeTransferFrom(address from, address to, uint256 tokenID, bool registered, bytes memory data) internal {
