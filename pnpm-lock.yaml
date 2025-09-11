@@ -72,8 +72,8 @@ importers:
         specifier: ^3.0.6
         version: 3.0.6
       hardhat-deploy:
-        specifier: ^2.0.0-next.43
-        version: 2.0.0-next.43(hardhat@3.0.6)(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))
+        specifier: ^2.0.0-next.45
+        version: 2.0.0-next.45(hardhat@3.0.6)(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5))
       ldenv:
         specifier: ^0.3.9
         version: 0.3.12
@@ -1514,8 +1514,8 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
-  hardhat-deploy@2.0.0-next.43:
-    resolution: {integrity: sha512-pvSD2vgtgsMYkt+oBpaRQ/YEX5W/3tfz9aLvoQGgFUobckcyLcjaNSX1a5UK6CiDDQ7VE7J9bOxOo8KYs3Gr8Q==}
+  hardhat-deploy@2.0.0-next.45:
+    resolution: {integrity: sha512-WnhhG13yNfaOXnjm7l3UBQ8nCBQh831F4cpssWSlQ56Zo+W2T5GxxKHPLhlrN4AqmDqq30VC/ZMzNjofTOb9oA==}
     peerDependencies:
       hardhat: ^3.0.0
       rocketh: ^0.14.4
@@ -4006,7 +4006,7 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.19.3
 
-  hardhat-deploy@2.0.0-next.43(hardhat@3.0.6)(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5)):
+  hardhat-deploy@2.0.0-next.45(hardhat@3.0.6)(rocketh@0.14.6(typescript@5.9.2)(zod@4.1.5)):
     dependencies:
       '@nomicfoundation/hardhat-zod-utils': 3.0.0(zod@4.1.5)
       '@types/debug': 4.1.12

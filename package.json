@@ -42,7 +42,7 @@
     "ethereum-contracts-test-suite": "^0.2.1",
     "ethereum-indexer-browser": "^0.7.0",
     "hardhat": "^3.0.6",
-    "hardhat-deploy": "^2.0.0-next.43",
+    "hardhat-deploy": "^2.0.0-next.45",
     "ldenv": "^0.3.9",
     "pkgroll": "^2.15.4",
     "prettier": "^3.6.2",
