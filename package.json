@@ -9,6 +9,16 @@
     "ethereum",
     "library"
   ],
+  "exports": {
+		"artifacts/*": {
+			"types": "./generated/artifacts/*.d.ts",
+			"default": "./generated/artifacts/*.js"
+		},
+    "abis/*": {
+			"types": "./generated/abis/*.d.ts",
+			"default": "./generated/abis/*.js"
+		}
+	},
   "files": [
     "solc_0_8",
     "generated"
